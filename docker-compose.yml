@@ -1,27 +1,30 @@
-version: '2'
+version: '3'
 services:
   server1:
     build: ./org1/
     networks:
         red1:
             ipv4_address: 192.168.251.100
+    
   server2:
     build: ./org2/
     networks:
         red2:
             ipv4_address: 192.168.252.100
 
-
 networks:
   red1:
     driver: bridge
+    driver_opts:
+            com.docker.network.bridge.enable_icc: "true"
     ipam:
      config:
        - subnet: 192.168.251.0/24
-         gateway: 192.168.251.1
   red2:
     driver: bridge
+    driver_opts:
+            com.docker.network.bridge.enable_icc: "true"
+            
     ipam:
      config:
        - subnet: 192.168.252.0/24
-         gateway: 192.168.252.1
