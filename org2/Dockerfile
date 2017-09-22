@@ -1,6 +1,8 @@
 FROM ubuntu:16.04
 LABEL maintainer="valiantsin.kivachuk@um.es"
 
+#ORG2-N1
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
         net-tools=1.60-26ubuntu1 \
         traceroute=1:2.0.21-1 \
@@ -10,6 +12,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         curl=7.47.0-1ubuntu2.2 \
         nano=2.5.3-2ubuntu2 \
         ifupdown2=1.0~git20151029-1 \
+        supervisor \
+        snmpd snmp snmp-mibs-downloader \        
 && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["/bin/bash"]
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Insert comment
+
+COPY conf/snmpd.conf /etc/snmp/snmpd.conf
+
+CMD ["/usr/bin/supervisord"]

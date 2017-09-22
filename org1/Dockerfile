@@ -22,4 +22,4 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 
-ENTRYPOINT ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord"]
