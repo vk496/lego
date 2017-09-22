@@ -11,11 +11,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         nano=2.5.3-2ubuntu2 \
         ifupdown2=1.0~git20151029-1 \
         supervisor \
-        snmpd snmp snmp-mibs-downloader \        
+        snmpd snmptrapd snmp snmp-mibs-downloader \
 && rm -rf /var/lib/apt/lists/*
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+
+RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Insert comment
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
+
 
 ENTRYPOINT ["/usr/bin/supervisord"]
