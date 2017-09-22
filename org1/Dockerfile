@@ -1,6 +1,8 @@
 FROM ubuntu:16.04
 LABEL maintainer="valiantsin.kivachuk@um.es"
 
+#ORG1-N1
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
         net-tools=1.60-26ubuntu1 \
         traceroute=1:2.0.21-1 \
@@ -15,6 +17,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 && rm -rf /var/lib/apt/lists/*
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Insert comment
 
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 

@@ -1,18 +1,18 @@
 version: '3'
 services:
-  server1:
+  org1_n1:
     build: ./org1/
     networks:
         red1:
             ipv4_address: 192.168.251.100
     
-  server2:
+  org2_n1:
     build: ./org2/
     networks:
         red2:
             ipv4_address: 192.168.252.100
 
-  server3: #Centro de calculo
+  ccalculo: #Centro de calculo
     build: ./ccalculo/
     networks:
         red3:
