@@ -19,6 +19,6 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Insert comment
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
-
+COPY conf/snmptrapd.conf /etc/snmp/snmptrapd.conf
 
 ENTRYPOINT ["/usr/bin/supervisord"]
