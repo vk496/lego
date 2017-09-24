@@ -12,8 +12,8 @@ services:
         red2:
             ipv4_address: 192.168.252.100
 
-  ccalculo: #Centro de calculo
-    build: ./ccalculo/
+  ccalculo_n1: #Centro de calculo
+    build: ./ccalculo/n1/
     networks:
         red3:
             ipv4_address: 192.168.253.100
