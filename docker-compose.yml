@@ -12,11 +12,17 @@ services:
         red2:
             ipv4_address: 192.168.252.100
 
-  ccalculo_n1: #Centro de calculo
+  ccalculo_n1: #OpenNMS
     build: ./ccalculo/n1/
     networks:
         red3:
             ipv4_address: 192.168.253.100
+
+  ccalculo_n2: #VoIP
+    build: ./ccalculo/n2/
+    networks:
+        red3:
+            ipv4_address: 192.168.253.2
 
 
 networks:

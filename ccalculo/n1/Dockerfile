@@ -13,8 +13,8 @@ RUN bash -c 'echo -e "Dpkg::Progress-Fancy "1";\nAPT::Color "1";" > /etc/apt/apt
 RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main " >> /etc/apt/source.list && \
         echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main " >> /etc/apt/source.list && \
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 && \
-        echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/source.list && \
-        echo "deb-src http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/source.list && \
+        echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
+        echo "deb-src http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys DC058F40 && \
         echo "deb http://debian.opennms.org opennms-20 main" >> /etc/apt/sources.list.d/opennms.list && \
         echo "deb-src http://debian.opennms.org opennms-20 main " >> /etc/apt/sources.list.d/opennms.list && \
@@ -23,7 +23,7 @@ RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main " >> 
         echo "debconf shared/accepted-oracle-license-v1-1 seen true" | debconf-set-selections && \
         echo "postfix postfix/mailname string opennms" | debconf-set-selections && \
         echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-        apt-get update && apt-get install --no-install-recommends -y apt-fast && apt-fast install --no-install-recommends -y \\
+        apt-get update && apt-get install --no-install-recommends -y apt-fast && apt-fast install --no-install-recommends -y \
             net-tools=1.60-26ubuntu1 \
             traceroute=1:2.0.21-1 \
             netcat=1.10-41 \
