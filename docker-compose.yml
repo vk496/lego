@@ -1,30 +1,33 @@
 version: '3'
 services:
-  org1_n1:
-    build: ./org1/
+
+# Org1 #####################################
+  org1_server:
+    build: ./org1/server/
     networks:
         red1:
             ipv4_address: 192.168.251.100
-    
+
+  org1_pc1:
+    build: ./org1/pc1/
+    networks:
+        red1:
+            ipv4_address: 192.168.251.20
+
+  org1_voip: #VoIP
+    build: ./org1/voip/
+    networks:
+        red1:
+            ipv4_address: 192.168.251.2
+
+# Org2 #####################################
   org2_n1:
     build: ./org2/
     networks:
         red2:
             ipv4_address: 192.168.252.100
 
-  ccalculo_n1: #OpenNMS
-    build: ./ccalculo/n1/
-    networks:
-        red3:
-            ipv4_address: 192.168.253.100
-
-  ccalculo_n2: #VoIP
-    build: ./ccalculo/n2/
-    networks:
-        red3:
-            ipv4_address: 192.168.253.2
-
-
+            
 networks:
   red1:
     driver: bridge
@@ -41,11 +44,3 @@ networks:
     ipam:
      config:
        - subnet: 192.168.252.0/24
-
-  red3: #Centro de Calculo
-    driver: bridge
-    driver_opts:
-            com.docker.network.bridge.enable_icc: "true"
-    ipam:
-     config:
-       - subnet: 192.168.253.0/24

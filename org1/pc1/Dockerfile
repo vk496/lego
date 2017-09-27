@@ -19,7 +19,7 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
         snmpd snmp snmp-mibs-downloader \        
 && rm -rf /var/lib/apt/lists/*
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Insert comment
 
