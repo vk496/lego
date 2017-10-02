@@ -2,13 +2,15 @@ version: '3'
 services:
 
 # Org1 #####################################
-  server:
+  fium_server:
+    hostname: fium_server
     build: ./fium/server/
     networks:
         red1:
             ipv4_address: 192.168.251.100
 
-  org1_pc1:
+  fium_pc1:
+    hostname: fium_pc1
     build: ./fium/pc1/
     networks:
         red1:
