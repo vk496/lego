@@ -2,20 +2,20 @@ version: '3'
 services:
 
 # Org1 #####################################
-  org1_server:
-    build: ./org1/server/
+  server:
+    build: ./fium/server/
     networks:
         red1:
             ipv4_address: 192.168.251.100
 
   org1_pc1:
-    build: ./org1/pc1/
+    build: ./fium/pc1/
     networks:
         red1:
             ipv4_address: 192.168.251.20
 
   org1_voip: #VoIP
-    build: ./org1/voip/
+    build: ./fium/voip/
     networks:
         red1:
             ipv4_address: 192.168.251.2

@@ -34,8 +34,8 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
 #Wrapper
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
 
-RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Insert comment
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 COPY conf/snmptrapd.conf /etc/snmp/snmptrapd.conf
 
