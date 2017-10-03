@@ -13,16 +13,16 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
             net-tools=1.60-26ubuntu1 \
             supervisor \
             snmpd snmp snmp-mibs-downloader \
+            nano \
     && rm -rf /var/lib/apt/lists/*
 
 ENV ASTERISK_VERSION 14.6.2
 
-WORKDIR /usr/src
-RUN aria2c -x5 -s5 https://github.com/asterisk/asterisk/archive/$ASTERISK_VERSION.tar.gz && tar -xvf asterisk-$ASTERISK_VERSION.tar.gz
+RUN aria2c -x5 -s5 -d /usr/src/ https://github.com/asterisk/asterisk/archive/$ASTERISK_VERSION.tar.gz && tar --directory /usr/src/ -xvf /usr/src/asterisk-$ASTERISK_VERSION.tar.gz 
 
-WORKDIR /usr/src/asterisk-$ASTERISK_VERSION
 # Configure
-RUN ./configure && \
+RUN cd /usr/src/asterisk-$ASTERISK_VERSION && \
+        ./configure && \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) menuselect.makeopts && \
         menuselect/menuselect \
         --disable BUILD_NATIVE \
@@ -102,16 +102,21 @@ RUN ./configure && \
         --enable res_statsd \
         --enable res_timing_timerfd \
         menuselect.makeopts && \
-        
+        \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) && \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) install && \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) samples && \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) config && \
-
-        sed -i -e 's/# MAXFILES=/MAXFILES=/' /usr/sbin/safe_asterisk
-
+        \
+        sed -i -e 's/# MAXFILES=/MAXFILES=/' /usr/sbin/safe_asterisk && \
+        rm -Rf /usr/src/asterisk*
+        
+#Enable GUI
+RUN svn co http://svn.asterisk.org/svn/asterisk-gui/branches/2.0 /var/lib/asterisk/static-http
+        
 # Copy in default configs
 COPY conf/http.conf /etc/asterisk/http.conf
+COPY conf/manager.conf /etc/asterisk/manager.conf
 #Wrapper
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #SNMP

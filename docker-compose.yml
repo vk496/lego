@@ -2,22 +2,23 @@ version: '3'
 services:
 
 # Org1 #####################################
-  fium_server:
-    hostname: fium_server
-    build: ./fium/server/
+  um_server:
+    hostname: um_server
+    build: ./um/server/
     networks:
         red1:
             ipv4_address: 192.168.251.100
 
-  fium_pc1:
-    hostname: fium_pc1
-    build: ./fium/pc1/
+  um_pc1:
+    hostname: um_pc1
+    build: ./um/pc1/
     networks:
         red1:
             ipv4_address: 192.168.251.20
 
-  org1_voip: #VoIP
-    build: ./fium/voip/
+  um_voip: #VoIP
+    hostname: um_voip
+    build: ./um/voip/
     networks:
         red1:
             ipv4_address: 192.168.251.2
