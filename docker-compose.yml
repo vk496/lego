@@ -12,6 +12,8 @@ services:
   um_pc1:
     hostname: um_pc1
     build: ./um/pc1/
+    depends_on:
+        - "um_server"
     networks:
         red1:
             ipv4_address: 192.168.251.20
@@ -19,6 +21,8 @@ services:
   um_voip: #VoIP
     hostname: um_voip
     build: ./um/voip/
+    depends_on:
+        - "um_server"
     networks:
         red1:
             ipv4_address: 192.168.251.2
