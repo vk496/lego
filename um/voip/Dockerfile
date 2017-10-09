@@ -110,17 +110,9 @@ RUN cd /usr/src/asterisk-$ASTERISK_VERSION && \
         \
         sed -i -e 's/# MAXFILES=/MAXFILES=/' /usr/sbin/safe_asterisk && \
         rm -Rf /usr/src/asterisk*
-        
-#Enable GUI
-RUN svn co http://svn.asterisk.org/svn/asterisk-gui/branches/2.0 /usr/src/asterisk-gui && \
-        cd /usr/src/asterisk-gui && \
-        ./configure && \
-        make -j $(($(getconf _NPROCESSORS_ONLN)+1)) && \
-        make -j $(($(getconf _NPROCESSORS_ONLN)+1)) install && \
-        rm -Rf /usr/src/asterisk*
+
         
 # Copy in default configs
-COPY conf/http.conf /etc/asterisk/http.conf
 COPY conf/manager.conf /etc/asterisk/manager.conf
 #Wrapper
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
