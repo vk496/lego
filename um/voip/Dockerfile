@@ -114,6 +114,10 @@ RUN cd /usr/src/asterisk-$ASTERISK_VERSION && \
         
 # Copy in default configs
 COPY conf/manager.conf /etc/asterisk/manager.conf
+COPY conf/sip.conf /etc/asterisk/sip.conf
+COPY conf/users.conf /etc/asterisk/users.conf
+COPY conf/extensions.conf /etc/asterisk/extensions.conf
+
 #Wrapper
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #SNMP
