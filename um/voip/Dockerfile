@@ -10,7 +10,7 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
             automake libtool libxml2-dev libncurses5-dev unixodbc unixodbc-dev libasound2-dev libogg-dev \
             libvorbis-dev libneon27-dev libspandsp-dev uuid uuid-dev sqlite3 libsqlite3-dev aria2 \
             libgnutls-dev ca-certificates wget \
-            net-tools=1.60-26ubuntu1 \
+            net-tools \
             supervisor \
             snmpd snmp snmp-mibs-downloader \
             nano \
