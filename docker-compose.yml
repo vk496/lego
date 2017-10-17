@@ -30,13 +30,14 @@ services:
             ipv4_address: 192.168.251.2
 
 # Org2 #####################################
-  org2_n1:
-    build: ./org2/
+  upm_voip: #VoIP
+    hostname: upm_voip
+    build: ./upm/voip/
     networks:
         red2:
-            ipv4_address: 192.168.252.100
+            ipv4_address: 192.168.252.2
 
-            
+# NETWORKS ################################
 networks:
   red1:
     driver: bridge
@@ -54,6 +55,7 @@ networks:
      config:
        - subnet: 192.168.252.0/24
 
+# PERSISTENCE ###############################
 
 volumes:
     um-certs:
