@@ -34,7 +34,7 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
 && rm -rf /var/lib/apt/lists/* \
 && rm -rf /var/cache/oracle-jdk8-installer
 
-ENV SNMP_VERSION 5.7.3
+ENV SNMP_VERSION 5.6.2
 
 RUN wget -P /usr/src/ https://sourceforge.net/projects/net-snmp/files/net-snmp/$SNMP_VERSION/net-snmp-$SNMP_VERSION.tar.gz && tar --directory /usr/src/ -xvf /usr/src/net-snmp-$SNMP_VERSION.tar.gz
 
@@ -50,6 +50,9 @@ RUN cd /usr/src/net-snmp-$SNMP_VERSION && \
             --with-persistent-directory=/var/net-snmp \
             --disable-embedded-perl \
             --without-perl-modules \
+            --disable-shared \
+            --enable-static \
+            --with-pic \
         && \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) && \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) install && \
