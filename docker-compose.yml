@@ -37,24 +37,6 @@ services:
         red2:
             ipv4_address: 192.168.252.2
 
-# NETWORKS ################################
-networks:
-  red1:
-    driver: bridge
-    driver_opts:
-            com.docker.network.bridge.enable_icc: "true"
-    ipam:
-     config:
-       - subnet: 192.168.251.0/24
-
-  red2:
-    driver: bridge
-    driver_opts:
-            com.docker.network.bridge.enable_icc: "true"
-    ipam:
-     config:
-       - subnet: 192.168.252.0/24
-
 # PERSISTENCE ###############################
 
 volumes:
@@ -64,3 +46,21 @@ volumes:
     upm-certs:
         external:
             name: "upm-certs"
+
+# NETWORKS ################################
+networks:
+  red1:
+    driver: macvlan
+    driver_opts:
+            parent: enp1s0.3
+    ipam:
+     config:
+       - subnet: 192.168.251.0/24
+
+  red2:
+    driver: macvlan
+    driver_opts:
+            parent: enp1s0.4
+    ipam:
+     config:
+       - subnet: 192.168.252.0/24
