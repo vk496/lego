@@ -3,7 +3,7 @@ set -e
 trap 'exit 130' INT #Exit if trap Ctrl+C
 
 #Software necesario
-software=( sudo bash docker-compose sysctl docker iptables grep awk basename )
+software=( sudo bash docker-compose sysctl docker iptables grep awk basename cat cut sed)
 
 for i in "${software[@]}"; do
     if ! hash $i 2>/dev/null; then
@@ -14,6 +14,45 @@ done
 
 #Root 
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+
+while getopts ":m :b" opt; do
+    case $opt in
+        b)
+            echo "Installing bridge driver"
+            base="$(sed '/# NETWORKS #############################/Q' docker-compose.yml)"
+            echo "$base" >docker-compose.yml
+            cat .docker-compose.BRIDGE >>docker-compose.yml
+        ;;
+        m)
+            echo "Installing macvlan driver - Review parent interfaces..."
+            base="$(sed '/# NETWORKS #############################/Q' docker-compose.yml)"
+            echo "$base" >docker-compose.yml
+            cat .docker-compose.MACVLAN >>docker-compose.yml
+        ;;
+        *)
+            echo "Invalid option: -$OPTARG" >&2
+            echo "Use -b or -m" >&2
+            exit 1
+        ;;
+    esac
+done
+
+
+driver=$(sed -n -e '/# NETWORKS #/,$p' docker-compose.yml | grep -i driver: -m1 | cut -d: -f2 | sed 's/ //g')
+
+if [ $driver == "macvlan" ]; then
+    color='\033[0;31m'
+elif [ $driver == "bridge" ]; then
+    color='\033[0;33m'
+else
+    echo "Strange network driver. Exiting...."
+    exit 1
+fi
+
+
+echo -e "Usign $color${driver}\033[0m network driver"
+sleep 1.5
+
 
 domains=( "um" "upm" )
 
