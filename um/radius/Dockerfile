@@ -16,7 +16,8 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
         nano \
         ifupdown2 \
         supervisor \
-        snmpd snmp snmp-mibs-downloader \        
+        snmpd snmp snmp-mibs-downloader \
+        freeradius \
 && rm -rf /var/lib/apt/lists/*
 
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -24,5 +25,14 @@ COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Insert comment
 
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
+
+
+#Freeradius
+COPY conf/clients.conf /etc/freeradius/clients.conf
+COPY conf/eap.conf /etc/freeradius/eap.conf
+COPY conf/radiusd.conf /etc/freeradius/radiusd.conf
+COPY conf/users /etc/freeradius/users
+
+
 
 CMD ["/usr/bin/supervisord"]

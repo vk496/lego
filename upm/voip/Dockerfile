@@ -6,7 +6,7 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
         echo "deb-src http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys DC058F40 && \
         apt-get update && apt-get --no-install-recommends -y install apt-fast && \
-            apt-fast install --no-install-recommends -y build-essential git-core pkg-config subversion libjansson-dev sqlite autoconf \
+            apt-fast install -y build-essential git-core pkg-config subversion libjansson-dev sqlite autoconf \
             automake libtool libxml2-dev libncurses5-dev unixodbc unixodbc-dev libasound2-dev libogg-dev \
             libvorbis-dev libneon27-dev libspandsp-dev uuid uuid-dev sqlite3 libsqlite3-dev aria2 \
             libgnutls-dev ca-certificates wget \

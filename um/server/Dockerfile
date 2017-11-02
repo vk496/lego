@@ -9,7 +9,7 @@ RUN bash -c 'echo -e "Dpkg::Progress-Fancy "1";\nAPT::Color "1";" > /etc/apt/apt
 RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
         echo "deb-src http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys DC058F40 && \
-        apt-get update && apt-get install --no-install-recommends -y apt-fast && apt-fast install --no-install-recommends -y \
+        apt-get update && apt-get install --no-install-recommends -y apt-fast && apt-fast install -y \
             net-tools \
             traceroute \
             netcat \
@@ -31,6 +31,7 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
             ca-certificates \
             build-essential \
             libtool \
+            freeradius-utils \
 && rm -rf /var/lib/apt/lists/* \
 && rm -rf /var/cache/oracle-jdk8-installer
 
