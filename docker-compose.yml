@@ -3,25 +3,67 @@ services:
 
 # Org1 #####################################
   um_server:
-    hostname: um_server
     build: ./um/server/
     volumes:
         - um-certs:/certs
     networks:
         red1:
+            aliases:
+                - server.um.es
             ipv4_address: 192.168.251.100
 
+  um_db:
+    image: postgres:10-alpine
+    environment:
+        - POSTGRES_PASSWORD=owncloud
+    networks:
+        red1:
+            aliases:
+                - db.um.es
+            ipv4_address: 192.168.251.4
+
   um_radius:
-    hostname: um_radius
     build: ./um/radius/
     depends_on:
         - "um_server"
     networks:
         red1:
+            aliases:
+                - radius.um.es
             ipv4_address: 192.168.251.3
 
+  um_owncloud:
+    build: ./um/owncloud
+    depends_on:
+        - "um_db"
+    links:
+        - um_db:owncloud-db
+    ports:
+        - "80:80"
+        - "443:443"
+    environment:
+        - OWNCLOUD_DB_HOST=db.um.es
+        - OWNCLOUD_DB_TYPE=pgsql
+        - OWNCLOUD_DB_NAME=owncloud
+        - OWNCLOUD_DB_USERNAME=postgres
+        - OWNCLOUD_DB_PASSWORD=owncloud
+        - OWNCLOUD_ADMIN_USERNAME=owncloud
+        - OWNCLOUD_ADMIN_PASSWORD=owncloud
+    networks:
+        red1:
+            aliases:
+                - owncloud.um.es
+            ipv4_address: 192.168.251.5
+
+  um_openldap:
+    build: ./um/openldap/
+    networks:
+        red1:
+            aliases:
+                - ldap.um.es
+            ipv4_address: 192.168.251.6
+
   um_pc1:
-    hostname: um_pc1
     build: ./um/pc1/
     depends_on:
         - "um_server"
@@ -30,20 +72,22 @@ services:
             ipv4_address: 192.168.251.20
 
   um_voip: #VoIP
-    hostname: um_voip
     build: ./um/voip/
     depends_on:
         - "um_server"
     networks:
         red1:
+            aliases:
+                - voip.um.es
             ipv4_address: 192.168.251.2
 
 # Org2 #####################################
   upm_voip: #VoIP
-    hostname: upm_voip
     build: ./upm/voip/
     networks:
         red2:
+            aliases:
+                - voip.upm.es
             ipv4_address: 192.168.252.2
 
 # PERSISTENCE ###############################
@@ -59,17 +103,17 @@ volumes:
 # NETWORKS ################################
 networks:
   red1:
-    driver: macvlan
+    driver: bridge
     driver_opts:
-            parent: enp1s0.3
+            com.docker.network.bridge.enable_icc: "true"
     ipam:
      config:
        - subnet: 192.168.251.0/24
 
   red2:
-    driver: macvlan
+    driver: bridge
     driver_opts:
-            parent: enp1s0.4
+            com.docker.network.bridge.enable_icc: "true"
     ipam:
      config:
        - subnet: 192.168.252.0/24
