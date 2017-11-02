@@ -201,3 +201,6 @@ DEFAULT	Hint == "SLIP"
 # 	Service-Type = Administrative-User
 
 # On no match, the user is denied access.
+
+
+user1	Cleartext-Password := "12345678"

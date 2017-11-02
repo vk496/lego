@@ -11,6 +11,15 @@ services:
         red1:
             ipv4_address: 192.168.251.100
 
+  um_radius:
+    hostname: um_radius
+    build: ./um/radius/
+    depends_on:
+        - "um_server"
+    networks:
+        red1:
+            ipv4_address: 192.168.251.3
+
   um_pc1:
     hostname: um_pc1
     build: ./um/pc1/

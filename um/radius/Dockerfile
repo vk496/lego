@@ -30,7 +30,7 @@ COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 #Freeradius
 COPY conf/clients.conf /etc/freeradius/clients.conf
 COPY conf/eap.conf /etc/freeradius/eap.conf
-COPY conf/radiusd.conf /etc/freeradius/radiusd.conf
+COPY conf/sites-available/default /etc/freeradius/sites-available/default
 COPY conf/users /etc/freeradius/users
 
 
