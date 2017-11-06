@@ -1,0 +1,22 @@
+#crea entrada para unidad organizativa “owncloud”
+dn: ou=Users,dc=um,dc=es
+changetype: add
+objectclass: organizationalUnit
+
+
+
+
+
+############ Users
+
+#crea entrada para un usuario
+dn: cn=user1,ou=Users,dc=um,dc=es
+changetype: add
+objectclass: inetOrgPerson
+cn: Juan
+sn: Gutierrez
+mail: user1@um.es
+mobile: 666244129
+userPassword: password1
+ou:Users
+uid: user1

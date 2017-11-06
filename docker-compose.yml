@@ -26,6 +26,7 @@ services:
     build: ./um/radius/
     depends_on:
         - "um_server"
+        - "um_openldap"
     networks:
         red1:
             aliases:
@@ -36,6 +37,7 @@ services:
     build: ./um/owncloud
     depends_on:
         - "um_db"
+        - "um_openldap"
     links:
         - um_db:owncloud-db
     ports:
@@ -57,6 +59,12 @@ services:
 
   um_openldap:
     build: ./um/openldap/
+    depends_on:
+        - "um_server"
+    environment:
+        - LDAP_ORGANISATION=Universidad de Murcia
+        - LDAP_DOMAIN=um.es
+        - LDAP_ADMIN_PASSWORD=um_password
     networks:
         red1:
             aliases:

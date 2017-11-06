@@ -1,6 +1,7 @@
 FROM osixia/openldap:1.1.10
 LABEL maintainer="valiantsin.kivachuk@um.es"
 
+
 ENV DEBIAN_FRONTEND noninteractive        
 
 #TODO ffix duplicated sourcelist
@@ -27,5 +28,7 @@ echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /et
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 
+#Extend LDAP Schema
+COPY conf/um.ldif /container/service/slapd/assets/config/bootstrap/ldif/custom/
 
 CMD ["/usr/bin/supervisord"]
