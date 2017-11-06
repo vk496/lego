@@ -21,14 +21,12 @@ echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /et
         snmpd snmp snmp-mibs-downloader \
 && rm -rf /var/lib/apt/lists/*
 
-# RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
-# && docker-php-ext-install ldap
-
-
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 
 #Extend LDAP Schema
 COPY conf/um.ldif /container/service/slapd/assets/config/bootstrap/ldif/custom/
+
+
 
 CMD ["/usr/bin/supervisord"]

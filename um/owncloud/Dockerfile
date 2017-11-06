@@ -20,12 +20,11 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
         libldap2-dev \
 && rm -rf /var/lib/apt/lists/*
 
-# RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
-# && docker-php-ext-install ldap
-
 
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 
+#Do magic for LDAP
+COPY misc/owncloud_ldap.sh /usr/bin
 
 CMD ["/usr/bin/supervisord"]
