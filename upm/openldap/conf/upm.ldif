@@ -1,0 +1,47 @@
+# Define dónde van a estar los usuarios
+dn: ou=users,dc=upm,dc=es
+objectclass: organizationalUnit
+
+############ Services
+#(&(objectclass=inetOrgPerson)(MemberOf=cn=owncloud,ou=users,dc=upm,dc=es))
+dn: cn=owncloud,ou=users,dc=upm,dc=es
+cn: owncloud
+objectClass: groupOfNames
+description: Servicio OwnCloud
+member: uid=user1,ou=users,dc=upm,dc=es
+
+############ Users
+dn: cn=user1,ou=users,dc=upm,dc=es
+objectclass: inetOrgPerson
+cn: Juan
+sn: Gutierrez
+mail: user1@upm.es
+mobile: 666244129
+userPassword: password2
+ou:users
+uid: user1
+
+dn: cn=user2,ou=users,dc=upm,dc=es
+objectclass: inetOrgPerson
+cn: Juan
+sn: Gutierrez
+mail: user2@upm.es
+mobile: 666244129
+userPassword: password2
+ou:users
+uid: user2
+
+dn: cn=user3,ou=users,dc=upm,dc=es
+objectclass: inetOrgPerson
+cn: Juan
+sn: Gutierrez
+mail: user3@upm.es
+mobile: 666244129
+userPassword: password2
+ou:users
+uid: user3
+
+#dn: cn=my,ou=owncloud,dc=upm,dc=es
+#objectClass: groupOfNames
+#cn: my
+#member: uid=user1,ou=users,dc=upm,dc=es

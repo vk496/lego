@@ -92,6 +92,8 @@ services:
 # Org2 #####################################
   upm_voip: #VoIP
     build: ./upm/voip/
+    depends_on:
+        - "upm_openldap"
     networks:
         red2:
             aliases:
@@ -105,6 +107,19 @@ services:
             aliases:
                 - radius.upm.es
             ipv4_address: 192.168.252.3
+
+  upm_openldap:
+    build: ./upm/openldap/
+    environment:
+        - LDAP_ORGANISATION=Universidad Politecnica de Madrid
+        - LDAP_DOMAIN=upm.es
+        - LDAP_ADMIN_PASSWORD=upm_password
+    networks:
+        red2:
+            aliases:
+                - ldap.upm.es
+            ipv4_address: 192.168.252.6
+
 # PERSISTENCE ###############################
 
 volumes:
