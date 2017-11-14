@@ -98,6 +98,13 @@ services:
                 - voip.upm.es
             ipv4_address: 192.168.252.2
 
+  upm_radius:
+    build: ./upm/radius/
+    networks:
+        red2:
+            aliases:
+                - radius.upm.es
+            ipv4_address: 192.168.252.3
 # PERSISTENCE ###############################
 
 volumes:
