@@ -32,7 +32,7 @@ COPY conf/clients.conf /etc/freeradius/clients.conf
 COPY conf/eap.conf /etc/freeradius/eap.conf
 COPY conf/sites-available/default /etc/freeradius/sites-available/default
 COPY conf/users /etc/freeradius/users
-
+COPY conf/proxy.conf /etc/freeradius/proxy.conf
 
 
 CMD ["/usr/bin/supervisord"]
