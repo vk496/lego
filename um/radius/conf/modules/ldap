@@ -34,7 +34,7 @@ ldap {
 	identity = "cn=admin,dc=um,dc=es"
 	password = um_password
 	basedn = "dc=um,dc=es"
-	filter = "(uid=%{%{Stripped-User-Name}:-%{User-Name}})"
+	filter = "(&(uid=%{%{Stripped-User-Name}:-%{User-Name}})(memberof=cn=radius,ou=Servicios,dc=um,dc=es))"
 	#base_filter = "(objectclass=radiusprofile)"
 
 	#  How many connections to keep open to the LDAP server.

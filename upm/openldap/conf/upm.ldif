@@ -11,7 +11,7 @@ objectclass: organizationalunit
 #############################################
 ########### USUARIOS ##########################
 #############################################
-dn: cn=user1,ou=Personas,dc=upm,dc=es
+dn: uid=user1,ou=Personas,dc=upm,dc=es
 cn: Juan
 sn: Perez
 mail: user1@upm.es
@@ -21,7 +21,7 @@ objectclass: top
 userPassword: password1
 
 
-dn: cn=user2,ou=Personas,dc=upm,dc=es
+dn: uid=user2,ou=Personas,dc=upm,dc=es
 cn: Sofia
 sn: Martinez
 mail: user2@upm.es
@@ -31,7 +31,7 @@ objectclass: top
 userPassword: password2
 
 
-dn: cn=user3,ou=Personas,dc=upm,dc=es
+dn: uid=user3,ou=Personas,dc=upm,dc=es
 cn: Leticia
 sn: Gutierrez
 mail: user3@upm.es
@@ -51,5 +51,14 @@ dn: cn=owncloud,ou=Servicios,dc=upm,dc=es
 cn: owncloud
 objectclass: groupOfNames
 objectclass: top
-member: cn=user1,ou=Personas,dc=upm,dc=es
-member: cn=user2,ou=Personas,dc=upm,dc=es
+member: uid=user1,ou=Personas,dc=upm,dc=es
+member: uid=user2,ou=Personas,dc=upm,dc=es
+
+
+# Radius
+dn: cn=radius,ou=Servicios,dc=upm,dc=es
+cn: radius
+objectclass: groupOfNames
+objectclass: top
+member: uid=user1,ou=Personas,dc=upm,dc=es
+member: uid=user2,ou=Personas,dc=upm,dc=es
