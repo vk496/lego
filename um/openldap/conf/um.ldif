@@ -14,8 +14,8 @@ objectclass: organizationalunit
 dn: cn=user1,ou=Personas,dc=um,dc=es
 cn: Juan
 sn: Perez
-mail: user11@um.es
-mobile: 666244129
+mail: user1@um.es
+mobile: 251001
 objectClass: inetOrgPerson
 objectclass: top
 userPassword: password1
@@ -25,20 +25,20 @@ dn: cn=user2,ou=Personas,dc=um,dc=es
 cn: Sofia
 sn: Martinez
 mail: user2@um.es
-mobile: 666244129
+mobile: 251002
 objectClass: inetOrgPerson
 objectclass: top
-userPassword: password1
+userPassword: password2
 
 
 dn: cn=user3,ou=Personas,dc=um,dc=es
-cn: Sofia
-sn: Martinez
+cn: Leticia
+sn: Gutierrez
 mail: user3@um.es
-mobile: 666244129
+mobile: 251003
 objectClass: inetOrgPerson
 objectclass: top
-userPassword: password1
+userPassword: password3
 
 
 #############################################
