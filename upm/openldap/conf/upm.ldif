@@ -1,47 +1,55 @@
 # Define dónde van a estar los usuarios
-dn: ou=users,dc=upm,dc=es
+dn: ou=Personas,dc=upm,dc=es
+ou: Personas
 objectclass: organizationalUnit
 
-############ Services
-#(&(objectclass=inetOrgPerson)(MemberOf=cn=owncloud,ou=users,dc=upm,dc=es))
-dn: cn=owncloud,ou=users,dc=upm,dc=es
-cn: owncloud
-objectClass: groupOfNames
-description: Servicio OwnCloud
-member: uid=user1,ou=users,dc=upm,dc=es
+#Grupo de servicios
+dn: ou=Servicios,dc=upm,dc=es
+ou: Servicios
+objectclass: organizationalunit
 
-############ Users
-dn: cn=user1,ou=users,dc=upm,dc=es
-objectclass: inetOrgPerson
+#############################################
+########### USUARIOS ##########################
+#############################################
+dn: cn=user1,ou=Personas,dc=upm,dc=es
 cn: Juan
-sn: Gutierrez
-mail: user1@upm.es
+sn: Perez
+mail: user11@upm.es
 mobile: 666244129
-userPassword: password2
-ou:users
-uid: user1
+objectClass: inetOrgPerson
+objectclass: top
+userPassword: password1
 
-dn: cn=user2,ou=users,dc=upm,dc=es
-objectclass: inetOrgPerson
-cn: Juan
-sn: Gutierrez
+
+dn: cn=user2,ou=Personas,dc=upm,dc=es
+cn: Sofia
+sn: Martinez
 mail: user2@upm.es
 mobile: 666244129
-userPassword: password2
-ou:users
-uid: user2
+objectClass: inetOrgPerson
+objectclass: top
+userPassword: password1
 
-dn: cn=user3,ou=users,dc=upm,dc=es
-objectclass: inetOrgPerson
-cn: Juan
-sn: Gutierrez
+
+dn: cn=user3,ou=Personas,dc=upm,dc=es
+cn: Sofia
+sn: Martinez
 mail: user3@upm.es
 mobile: 666244129
-userPassword: password2
-ou:users
-uid: user3
+objectClass: inetOrgPerson
+objectclass: top
+userPassword: password1
 
-#dn: cn=my,ou=owncloud,dc=upm,dc=es
-#objectClass: groupOfNames
-#cn: my
-#member: uid=user1,ou=users,dc=upm,dc=es
+
+#############################################
+########### SERVICIOS ##########################
+#############################################
+
+#Owncloud
+
+dn: cn=owncloud,ou=Servicios,dc=upm,dc=es
+cn: owncloud
+objectclass: groupOfNames
+objectclass: top
+member: cn=user1,ou=Personas,dc=upm,dc=es
+member: cn=user2,ou=Personas,dc=upm,dc=es

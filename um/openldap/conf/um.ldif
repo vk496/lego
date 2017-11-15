@@ -1,47 +1,55 @@
 # Define dónde van a estar los usuarios
-dn: ou=users,dc=um,dc=es
+dn: ou=Personas,dc=um,dc=es
+ou: Personas
 objectclass: organizationalUnit
 
-############ Services
-#(&(objectclass=inetOrgPerson)(MemberOf=cn=owncloud,ou=users,dc=um,dc=es))
-dn: cn=owncloud,ou=users,dc=um,dc=es
-cn: owncloud
-objectClass: groupOfNames
-description: Servicio OwnCloud
-member: uid=user1,ou=users,dc=um,dc=es
+#Grupo de servicios
+dn: ou=Servicios,dc=um,dc=es
+ou: Servicios
+objectclass: organizationalunit
 
-############ Users
-dn: cn=user1,ou=users,dc=um,dc=es
-objectclass: inetOrgPerson
+#############################################
+########### USUARIOS ##########################
+#############################################
+dn: cn=user1,ou=Personas,dc=um,dc=es
 cn: Juan
-sn: Gutierrez
-mail: user1@um.es
+sn: Perez
+mail: user11@um.es
 mobile: 666244129
+objectClass: inetOrgPerson
+objectclass: top
 userPassword: password1
-ou:users
-uid: user1
 
-dn: cn=user2,ou=users,dc=um,dc=es
-objectclass: inetOrgPerson
-cn: Juan
-sn: Gutierrez
+
+dn: cn=user2,ou=Personas,dc=um,dc=es
+cn: Sofia
+sn: Martinez
 mail: user2@um.es
 mobile: 666244129
+objectClass: inetOrgPerson
+objectclass: top
 userPassword: password1
-ou:users
-uid: user2
 
-dn: cn=user3,ou=users,dc=um,dc=es
-objectclass: inetOrgPerson
-cn: Juan
-sn: Gutierrez
+
+dn: cn=user3,ou=Personas,dc=um,dc=es
+cn: Sofia
+sn: Martinez
 mail: user3@um.es
 mobile: 666244129
+objectClass: inetOrgPerson
+objectclass: top
 userPassword: password1
-ou:users
-uid: user3
 
-#dn: cn=my,ou=owncloud,dc=um,dc=es
-#objectClass: groupOfNames
-#cn: my
-#member: uid=user1,ou=users,dc=um,dc=es
+
+#############################################
+########### SERVICIOS ##########################
+#############################################
+
+#Owncloud
+
+dn: cn=owncloud,ou=Servicios,dc=um,dc=es
+cn: owncloud
+objectclass: groupOfNames
+objectclass: top
+member: cn=user1,ou=Personas,dc=um,dc=es
+member: cn=user2,ou=Personas,dc=um,dc=es
