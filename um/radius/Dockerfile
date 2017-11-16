@@ -36,6 +36,7 @@ COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 COPY conf/clients.conf /etc/freeradius/clients.conf
 COPY conf/eap.conf /etc/freeradius/eap.conf
 COPY conf/sites-available/default /etc/freeradius/sites-available/default
+COPY conf/sites-available/inner-tunnel /etc/freeradius/sites-available/inner-tunnel
 COPY conf/proxy.conf /etc/freeradius/proxy.conf
 COPY conf/modules/ldap /etc/freeradius/modules/ldap
 
