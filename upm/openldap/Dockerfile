@@ -1,4 +1,4 @@
-FROM vk496/openldap:1.1.10
+FROM vk496/openldap
 LABEL maintainer="valiantsin.kivachuk@um.es"
 
 
