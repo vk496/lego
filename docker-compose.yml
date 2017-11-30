@@ -4,8 +4,6 @@ services:
 # Org1 #####################################
   um_server:
     build: ./um/server/
-    volumes:
-        - um-certs:/certs
     networks:
         red1:
             aliases:
@@ -84,7 +82,8 @@ services:
     depends_on:
         - "um_server"
     volumes:
-        - um-certs:/certs
+        - um-certs-voip:/certs
+        - lego_ca:/ca_ssl
     networks:
         red1:
             aliases:
@@ -97,7 +96,8 @@ services:
     depends_on:
         - "upm_openldap"
     volumes:
-        - upm-certs:/certs
+        - upm-certs-voip:/certs
+        - lego_ca:/ca_ssl
     networks:
         red2:
             aliases:
@@ -127,12 +127,30 @@ services:
 # PERSISTENCE ###############################
 
 volumes:
+    lego_ca:
+        external:
+            name: "lego_ca"
+    
+    
     um-certs:
         external:
             name: "um-certs"
+    um-certs-voip:
+        external:
+            name: "um-certs-voip"
+    um-certs-owncloud:
+        external:
+            name: "um-certs-owncloud"
+            
     upm-certs:
         external:
             name: "upm-certs"
+    upm-certs-voip:
+        external:
+            name: "upm-certs-voip"
+    upm-certs-owncloud:
+        external:
+            name: "upm-certs-owncloud"
 
 # NETWORKS ################################
 networks:
