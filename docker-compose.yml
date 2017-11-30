@@ -83,6 +83,8 @@ services:
     build: ./um/voip/
     depends_on:
         - "um_server"
+    volumes:
+        - um-certs:/certs
     networks:
         red1:
             aliases:
@@ -94,6 +96,8 @@ services:
     build: ./upm/voip/
     depends_on:
         - "upm_openldap"
+    volumes:
+        - upm-certs:/certs
     networks:
         red2:
             aliases:
