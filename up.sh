@@ -54,18 +54,54 @@ echo -e "Usign $color${driver}\033[0m network driver"
 sleep 1.5
 
 
-domains=( "um" "upm" )
+domains=( "um:192.168.251" "upm:192.168.252" )
 
-for dom in "${domains[@]}"; do
+for domain in "${domains[@]}"; do
+    dom=$(echo $domain | cut -d: -f1) #Get domain
+    ip_range=$(echo $domain | cut -d: -f2) #Get IP range
+
     if ! sudo -u $SUDO_USER docker volume inspect $dom-certs 2>/dev/null >/dev/null; then
-        sudo -u $SUDO_USER docker volume create $dom-certs
+        sudo -u $SUDO_USER docker volume create $dom-certs #All certs
+        
+        #Generate CA
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
-            -e SSL_SUBJECT="*.$dom.es" \
+            -e CA_SUBJECT="$dom" \
+            -e CA_EXPIRE="1000" \
             -e SSL_SIZE="4096" \
-            -e SSL_EXPIRE="360" \
+            -e SSL_KEY="delete_key.pem" \
+            -e SSL_CSR="delete_key.csr" \
+            -e SSL_CERT="delete_cert.pem" \
         paulczar/omgwtfssl
+
+        #Delete stuff
+        echo "DELETE default server cert & keys"
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -it paulczar/omgwtfssl bash -c 'rm delete*'
+        echo "OK"
+        
+        servicios=(
+            "owncloud:$ip_range.5"
+            "voip:$ip_range.5"
+        )
+        
+        for servicio in "${servicios[@]}"; do
+            subdom=$(echo $servicio | cut -d: -f1) #Get domain of service
+            ip_serv=$(echo $servicio | cut -d: -f2) #Get ip of service
+            
+            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
+                -e SSL_KEY="$subdom-key.pem" \
+                -e SSL_CSR="$subdom-key.csr" \
+                -e SSL_CERT="$subdom-cert.pem" \
+                -e SSL_SIZE="2048" \
+                -e SSL_EXPIRE="360" \
+                -e SSL_SUBJECT="$subdom.$dom.es" \
+                -e SSL_IP="$ip_serv" \
+            paulczar/omgwtfssl
+        done
+        
     fi
+        
 done
+
 sudo -u $SUDO_USER docker-compose up --build -d #Deploy services
 
 sudo sysctl -w net.ipv4.ip_forward=1 #Enable IP Forwarding
