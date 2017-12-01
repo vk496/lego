@@ -87,7 +87,7 @@ for domain in "${domains[@]}"; do
         
         servicios=(
             "owncloud:$ip_range.5"
-            "voip:$ip_range.5"
+            "voip:$ip_range.2"
         )
         
         for servicio in "${servicios[@]}"; do
@@ -98,13 +98,16 @@ for domain in "${domains[@]}"; do
             
             #Generate cert
             sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
+                -e CA_KEY="$dom-key.pem" \
+                -e CA_CERT="$dom.pem" \
+                -e CA_SUBJECT="$dom" \
                 -e SSL_KEY="$subdom-key.pem" \
                 -e SSL_CSR="$subdom-key.csr" \
                 -e SSL_CERT="$subdom-cert.pem" \
                 -e SSL_SIZE="2048" \
                 -e SSL_EXPIRE="360" \
-                -e SSL_SUBJECT="$subdom.$dom.es" \
-                -e SSL_IP="$ip_serv" \
+                -e SSL_SUBJECT="$ip_serv" \
+                -e SSL_DNS="$subdom.$dom.es" \
             paulczar/omgwtfssl
             
             #Aislate the keys from CA

@@ -4,6 +4,8 @@ services:
 # Org1 #####################################
   um_server:
     build: ./um/server/
+    hostname: server
+    domainname: um.es
     networks:
         red1:
             aliases:
@@ -12,6 +14,8 @@ services:
 
   um_db:
     image: postgres:10-alpine
+    hostname: db
+    domainname: um.es
     environment:
         - POSTGRES_PASSWORD=owncloud
     networks:
@@ -22,6 +26,8 @@ services:
 
   um_radius:
     build: ./um/radius/
+    hostname: radius
+    domainname: um.es
     depends_on:
         - "um_server"
         - "um_openldap"
@@ -33,6 +39,8 @@ services:
 
   um_owncloud:
     build: ./um/owncloud
+    hostname: owncloud
+    domainname: um.es
     depends_on:
         - "um_db"
         - "um_openldap"
@@ -57,6 +65,8 @@ services:
 
   um_openldap:
     build: ./um/openldap/
+    hostname: ldap
+    domainname: um.es
     depends_on:
         - "um_server"
     environment:
@@ -79,6 +89,8 @@ services:
 
   um_voip: #VoIP
     build: ./um/voip/
+    hostname: voip
+    domainname: um.es
     depends_on:
         - "um_server"
     volumes:
@@ -93,6 +105,8 @@ services:
 # Org2 #####################################
   upm_voip: #VoIP
     build: ./upm/voip/
+    hostname: voip
+    domainname: upm.es
     depends_on:
         - "upm_openldap"
     volumes:
@@ -106,6 +120,8 @@ services:
 
   upm_radius:
     build: ./upm/radius/
+    hostname: radius
+    domainname: upm.es
     networks:
         red2:
             aliases:
@@ -114,6 +130,8 @@ services:
 
   upm_openldap:
     build: ./upm/openldap/
+    hostname: ldap
+    domainname: upm.es
     environment:
         - LDAP_ORGANISATION=Universidad Politecnica de Madrid
         - LDAP_DOMAIN=upm.es
