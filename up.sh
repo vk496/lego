@@ -78,11 +78,12 @@ for domain in "${domains[@]}"; do
             -e SSL_KEY="delete_key.pem" \
             -e SSL_CSR="delete_key.csr" \
             -e SSL_CERT="delete_cert.pem" \
-        paulczar/omgwtfssl
+            -e SSL_CRL="http://crl.$dom.es/crl.pem" \
+        vk496/omgwtfssl
 
         #Delete stuff
         echo "DELETE default server cert & keys"
-        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs paulczar/omgwtfssl bash -c 'rm delete*'
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl bash -c 'rm delete*'
         echo "OK"
         
         servicios=(
@@ -108,10 +109,11 @@ for domain in "${domains[@]}"; do
                 -e SSL_EXPIRE="360" \
                 -e SSL_SUBJECT="$ip_serv" \
                 -e SSL_DNS="$subdom.$dom.es" \
-            paulczar/omgwtfssl
+                -e SSL_CRL="http://crl.$dom.es/$dom.crl" \
+            vk496/omgwtfssl
             
             #Aislate the keys from CA
-            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs paulczar/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs"
+            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs"
         done
     fi
         
@@ -123,7 +125,12 @@ if [ $init_TLS ]; then
     for domain in "${domains[@]}"; do
         dom=$(echo $domain | cut -d: -f1) #Get domain
         
-        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v lego_ca:/public_ca paulczar/omgwtfssl bash -c "cp /certs/$dom.pem /public_ca && cp /certs/$dom.pem /public_ca/\$(openssl x509 -in /certs/$dom.pem -noout -hash).0"
+        #Prepare publica CA certs
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v lego_ca:/public_ca vk496/omgwtfssl bash -c "cp /certs/$dom.pem /public_ca && cp /certs/$dom.pem /public_ca/\$(openssl x509 -in /certs/$dom.pem -noout -hash).0"
+        
+        #Generate CRL
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v lego_ca:/public_ca vk496/omgwtfssl bash -c "openssl ca -gencrl -config /certs/openssl.cnf -keyfile /certs/$dom-key.pem -cert $dom.pem -out /public_ca/$dom.crl"
+        
     done
 fi
 

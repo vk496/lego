@@ -2,6 +2,19 @@ version: '3'
 services:
 
 # Org1 #####################################
+  um_crl:
+    image: halverneus/static-file-server
+    hostname: crl
+    domainname: um.es
+    environment:
+        - PORT=80
+    volumes:
+        - lego_ca:/web
+    networks:
+        red1:
+            aliases:
+                - crl.um.es
+            ipv4_address: 192.168.251.99
   um_server:
     build: ./um/server/
     hostname: server
@@ -103,6 +116,19 @@ services:
             ipv4_address: 192.168.251.2
 
 # Org2 #####################################
+  upm_crl:
+    image: halverneus/static-file-server
+    hostname: crl
+    domainname: upm.es
+    environment:
+        - PORT=80
+    volumes:
+        - lego_ca:/web
+    networks:
+        red2:
+            aliases:
+                - crl.upm.es
+            ipv4_address: 192.168.252.99
   upm_voip: #VoIP
     build: ./upm/voip/
     hostname: voip
