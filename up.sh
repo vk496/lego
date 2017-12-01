@@ -109,6 +109,7 @@ for domain in "${domains[@]}"; do
                 -e SSL_EXPIRE="360" \
                 -e SSL_SUBJECT="$ip_serv" \
                 -e SSL_DNS="$subdom.$dom.es" \
+                -e SSL_IP="$ip_serv" \
                 -e SSL_CRL="http://crl.$dom.es/$dom.crl" \
             vk496/omgwtfssl
             

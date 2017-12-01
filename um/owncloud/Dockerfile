@@ -27,4 +27,7 @@ COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 #Do magic for LDAP
 COPY misc/owncloud_ldap.sh /usr/bin
 
+#SSL
+COPY conf/apache_sites-available/000-default.conf /etc/apache2/sites-available/default.conf
+
 CMD ["/usr/bin/supervisord"]

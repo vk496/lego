@@ -54,6 +54,8 @@ services:
     build: ./um/owncloud
     hostname: owncloud
     domainname: um.es
+    volumes:
+        - um-certs-owncloud:/certs
     depends_on:
         - "um_db"
         - "um_openldap"

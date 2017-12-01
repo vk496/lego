@@ -21,3 +21,9 @@ su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ ldap:set-config '' ldapUserFilterGroups owncloud &&\
                                                         php occ ldap:set-config '' ldapBaseGroups dc=um,dc=es &&\
                                                         php occ ldap:set-config '' ldapBaseUsers dc=um,dc=es"
+
+                                                        
+#Replace config
+rm /etc/apache2/sites-enabled/*
+a2ensite default
+/etc/init.d/apache2 reload
