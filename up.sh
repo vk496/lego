@@ -63,9 +63,7 @@ for domain in "${domains[@]}"; do
         dom=$(echo $domain | cut -d: -f1) #Get domain
         ip_range=$(echo $domain | cut -d: -f2) #Get IP range
         
-    if ! sudo -u $SUDO_USER docker volume inspect $dom-certs 2>/dev/null >/dev/null; then
-        init_TLS=true
-        
+    if ! sudo -u $SUDO_USER docker volume inspect $dom-certs 2>/dev/null >/dev/null; then        
         sudo -u $SUDO_USER docker volume create $dom-certs #All certs
         
         #Generate CA
@@ -78,7 +76,7 @@ for domain in "${domains[@]}"; do
             -e SSL_KEY="delete_key.pem" \
             -e SSL_CSR="delete_key.csr" \
             -e SSL_CERT="delete_cert.pem" \
-            -e SSL_CRL="http://crl.$dom.es/crl.pem" \
+            -e SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99" \
         vk496/omgwtfssl
 
         #Delete stuff
@@ -110,17 +108,17 @@ for domain in "${domains[@]}"; do
                 -e SSL_SUBJECT="$ip_serv" \
                 -e SSL_DNS="$subdom.$dom.es" \
                 -e SSL_IP="$ip_serv" \
-                -e SSL_CRL="http://crl.$dom.es/$dom.crl" \
+                -e SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_serv.99" \
             vk496/omgwtfssl
             
-            #Aislate the keys from CA
-            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs"
+            #Aislate the keys from CA and full chain CA
+            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs && cat /certs/{$subdom-cert.pem,$dom.pem} > /service_certs/$subdom-cert-full.pem"
         done
     fi
         
 done
 
-if [ $init_TLS ]; then
+if ! sudo -u $SUDO_USER docker volume inspect lego_ca 2>/dev/null >/dev/null; then
     sudo -u $SUDO_USER docker volume create lego_ca #Public CA keys
 
     for domain in "${domains[@]}"; do
