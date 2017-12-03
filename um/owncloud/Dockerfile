@@ -28,6 +28,11 @@ COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 COPY misc/owncloud_ldap.sh /usr/bin
 
 #SSL
-COPY conf/apache_sites-available/000-default.conf /etc/apache2/sites-available/default.conf
+RUN mkdir /etc/apache2/keys
+RUN ln -s /certs/owncloud-cert.pem /etc/apache2/keys/ssl-cert.crt
+RUN ln -s /certs/owncloud-key.pem /etc/apache2/keys/ssl-cert.key
+
+COPY conf/apache_sites-available/toppath.conf /root/owncloud/toppath.conf
+COPY conf/apache_sites-available/subpath.conf /root/owncloud/subpath.conf
 
 CMD ["/usr/bin/supervisord"]

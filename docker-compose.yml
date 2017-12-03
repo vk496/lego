@@ -65,7 +65,7 @@ services:
     hostname: owncloud
     domainname: um.es
     volumes:
-        - um-certs-owncloud:/certs
+        - um-certs-owncloud:/etc/apache2/keys/
     depends_on:
         - "um_db"
         - "um_openldap"
@@ -83,6 +83,7 @@ services:
         - OWNCLOUD_DB_PASSWORD=owncloud
         - OWNCLOUD_ADMIN_USERNAME=owncloud
         - OWNCLOUD_ADMIN_PASSWORD=owncloud
+        - OWNCLOUD_VOLUME_CERTS=/etc/apache2/keys/
     networks:
         red1:
             aliases:

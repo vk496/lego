@@ -1,6 +1,11 @@
 #!/bin/sh
 set -e
 
+#CRLs
+mkdir /etc/apache2/crl
+wget http://crl.um.es/um.crl -P /etc/apache2/crl
+
+
 supervisorctl start owncloud
 
 su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
@@ -22,13 +27,3 @@ su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ ldap:set-config '' ldapBaseGroups dc=um,dc=es &&\
                                                         php occ ldap:set-config '' ldapBaseUsers dc=um,dc=es"
 
-
-#CRLs
-mkdir /etc/apache2/crl
-wget http://crl.um.es/um.crl -P /etc/apache2/crl
-
-
-#Replace config
-rm /etc/apache2/sites-enabled/*
-a2ensite default
-/etc/init.d/apache2 reload
