@@ -101,6 +101,7 @@ RUN cd /usr/src/asterisk-$ASTERISK_VERSION && \
         --enable res_stasis_test \
         --enable res_statsd \
         --enable res_timing_timerfd \
+        --enable res_config_ldap \
         menuselect.makeopts && \
         \
         make -j $(($(getconf _NPROCESSORS_ONLN)+1)) && \
