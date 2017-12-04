@@ -27,6 +27,6 @@ COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 #Extend LDAP Schema
 COPY conf/um.ldif /container/service/slapd/assets/config/bootstrap/ldif/custom/
 
-
+RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
 
 CMD ["/usr/bin/supervisord"]

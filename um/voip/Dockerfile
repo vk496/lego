@@ -124,4 +124,5 @@ COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #SNMP
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 
+RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
 CMD ["/usr/bin/supervisord"]

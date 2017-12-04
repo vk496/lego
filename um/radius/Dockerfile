@@ -40,4 +40,6 @@ COPY conf/sites-available/inner-tunnel /etc/freeradius/sites-available/inner-tun
 COPY conf/proxy.conf /etc/freeradius/proxy.conf
 COPY conf/modules/ldap /etc/freeradius/modules/ldap
 
+RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
+
 CMD ["/usr/bin/supervisord"]

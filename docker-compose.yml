@@ -25,14 +25,14 @@ services:
                 - crl.um.es
             ipv4_address: 192.168.251.99
 
-  um_server:
-    build: ./um/server/
-    hostname: server
+  um_snmp:
+    build: ./um/snmp/
+    hostname: snmp
     domainname: um.es
     networks:
         red1:
             aliases:
-                - server.um.es
+                - snmp.um.es
             ipv4_address: 192.168.251.100
 
   um_db:
@@ -52,7 +52,7 @@ services:
     hostname: radius
     domainname: um.es
     depends_on:
-        - "um_server"
+        - "um_snmp"
         - "um_openldap"
     networks:
         red1:
@@ -70,6 +70,7 @@ services:
         - "um_db"
         - "um_openldap"
         - "um_crl"
+        - "um_snmp"
     links:
         - um_db:owncloud-db
     ports:
@@ -95,7 +96,7 @@ services:
     hostname: ldap
     #domainname: um.es
     depends_on:
-        - "um_server"
+        - "um_snmp"
     environment:
         - LDAP_ORGANISATION=Universidad de Murcia
         - LDAP_DOMAIN=um.es
@@ -116,7 +117,7 @@ services:
   um_pc1:
     build: ./um/pc1/
     depends_on:
-        - "um_server"
+        - "um_snmp"
     networks:
         red1:
             ipv4_address: 192.168.251.20
@@ -126,7 +127,7 @@ services:
     hostname: voip
     domainname: um.es
     depends_on:
-        - "um_server"
+        - "um_snmp"
     volumes:
         - um-certs-voip:/certs
         - lego_ca:/ca_ssl
@@ -160,12 +161,23 @@ services:
                 - crl.upm.es
             ipv4_address: 192.168.252.99
 
+  upm_snmp:
+    build: ./upm/snmp/
+    hostname: snmp
+    domainname: upm.es
+    networks:
+        red2:
+            aliases:
+                - snmp.upm.es
+            ipv4_address: 192.168.252.100
+            
   upm_voip: #VoIP
     build: ./upm/voip/
     hostname: voip
     domainname: upm.es
     depends_on:
         - "upm_openldap"
+        - "upm_snmp"
     volumes:
         - upm-certs-voip:/certs
         - lego_ca:/ca_ssl
@@ -179,6 +191,8 @@ services:
     build: ./upm/radius/
     hostname: radius
     domainname: upm.es
+    depends_on:
+        - "upm_snmp"
     networks:
         red2:
             aliases:
@@ -189,6 +203,8 @@ services:
     build: ./upm/openldap/
     hostname: ldap
     #domainname: upm.es
+    depends_on:
+        - "upm_snmp"
     environment:
         - LDAP_ORGANISATION=Universidad Politecnica de Madrid
         - LDAP_DOMAIN=upm.es
