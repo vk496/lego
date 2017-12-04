@@ -87,6 +87,7 @@ for domain in "${domains[@]}"; do
         servicios=(
             "owncloud:$ip_range.5"
             "voip:$ip_range.2"
+            "ldap:$ip_range.6"
         )
         
         for servicio in "${servicios[@]}"; do

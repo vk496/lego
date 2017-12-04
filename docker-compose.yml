@@ -93,13 +93,20 @@ services:
   um_openldap:
     build: ./um/openldap/
     hostname: ldap
-    domainname: um.es
+    #domainname: um.es
     depends_on:
         - "um_server"
     environment:
         - LDAP_ORGANISATION=Universidad de Murcia
         - LDAP_DOMAIN=um.es
         - LDAP_ADMIN_PASSWORD=um_password
+        - LDAP_TLS=true
+        - LDAP_TLS_CRT_FILENAME=ldap-cert.pem
+        - LDAP_TLS_KEY_FILENAME=ldap-key.pem
+        - LDAP_TLS_CA_CRT_FILENAME=um.pem
+        - LDAP_TLS_ENFORCE=false
+    volumes:
+        - um-certs-ldap:/container/service/slapd/assets/certs
     networks:
         red1:
             aliases:
@@ -180,11 +187,18 @@ services:
   upm_openldap:
     build: ./upm/openldap/
     hostname: ldap
-    domainname: upm.es
+    #domainname: upm.es
     environment:
         - LDAP_ORGANISATION=Universidad Politecnica de Madrid
         - LDAP_DOMAIN=upm.es
         - LDAP_ADMIN_PASSWORD=upm_password
+        - LDAP_TLS=true
+        - LDAP_TLS_CRT_FILENAME=ldap-cert.pem
+        - LDAP_TLS_KEY_FILENAME=ldap-key.pem
+        - LDAP_TLS_CA_CRT_FILENAME=upm.pem
+        - LDAP_TLS_ENFORCE=false
+    volumes:
+        - upm-certs-ldap:/container/service/slapd/assets/certs
     networks:
         red2:
             aliases:
@@ -208,6 +222,9 @@ volumes:
     um-certs-owncloud:
         external:
             name: "um-certs-owncloud"
+    um-certs-ldap:
+        external:
+            name: "um-certs-ldap"
             
     upm-certs:
         external:
@@ -218,6 +235,9 @@ volumes:
     upm-certs-owncloud:
         external:
             name: "upm-certs-owncloud"
+    upm-certs-ldap:
+        external:
+            name: "upm-certs-ldap"
 
 # NETWORKS ################################
 networks:

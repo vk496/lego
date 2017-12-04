@@ -7,7 +7,7 @@ wget http://crl.um.es/um.crl -P /etc/apache2/crl
 
 
 supervisorctl start owncloud
-
+sleep 3
 su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ app:enable user_ldap &&\
                                                         php occ ldap:create-empty-config &&\
