@@ -139,11 +139,12 @@ services:
 # Org2 #####################################
 
   upm_ca:
-    image: ubuntu:16.04
+    build: ./um/ca/
     hostname: ca
     domainname: upm.es
     volumes:
         - upm-certs:/certs
+    network_mode: none
 
   upm_crl:
     image: halverneus/static-file-server
