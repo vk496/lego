@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 #CRLs
@@ -15,6 +15,14 @@ while ! nc -z localhost 80; do
 done
 
 echo "Owncloud launched"
+
+su - www-data -s /bin/bash -c "php /var/www/owncloud/occ app:enable user_ldap"
+
+#Delete previous configs
+while read -r conf; do
+    su - www-data -s /bin/bash -c "php /var/www/owncloud/occ ldap:delete-config '$conf'"
+done <<< "$(su - www-data -s /bin/bash -c "php /var/www/owncloud/occ ldap:show-config | grep '| Configuration' | tr -d ' ' | cut -d'|' -f3")"
+
 
 su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ app:enable user_ldap &&\
@@ -33,5 +41,7 @@ su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ ldap:set-config '' hasMemberOfFilterSupport 1 &&\
                                                         php occ ldap:set-config '' ldapUserFilterGroups owncloud &&\
                                                         php occ ldap:set-config '' ldapBaseGroups dc=um,dc=es &&\
-                                                        php occ ldap:set-config '' ldapBaseUsers dc=um,dc=es"
+                                                        php occ ldap:set-config '' ldapBaseUsers dc=um,dc=es &&\
+                                                        php occ ldap:set-config '' ldapQuotaAttribute postOfficeBox &&\
+                                                        php occ ldap:set-config '' ldapQuotaDefault 1073741824"
 

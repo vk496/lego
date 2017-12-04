@@ -16,6 +16,7 @@ cn: Juan
 sn: Perez
 mail: user1@um.es
 mobile: 251001
+postOfficeBox: 2147483648
 objectClass: inetOrgPerson
 objectclass: top
 userPassword: password1
@@ -46,7 +47,7 @@ userPassword: password3
 #############################################
 
 #Owncloud
-
+# postOfficeBox = Disk quota size in bytes
 dn: cn=owncloud,ou=Servicios,dc=um,dc=es
 cn: owncloud
 objectclass: groupOfNames
