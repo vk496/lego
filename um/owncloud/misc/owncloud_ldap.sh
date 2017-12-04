@@ -7,7 +7,15 @@ wget http://crl.um.es/um.crl -P /etc/apache2/crl
 
 
 supervisorctl start owncloud
-sleep 3
+
+echo "Waiting owncloud to launch on 80..."
+
+while ! nc -z localhost 80; do   
+  sleep 0.1 # wait for 1/10 of the second before check again
+done
+
+echo "Owncloud launched"
+
 su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ app:enable user_ldap &&\
                                                         php occ ldap:create-empty-config &&\
