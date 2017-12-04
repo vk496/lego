@@ -72,16 +72,16 @@ for domain in "${domains[@]}"; do
             -e CA_CERT="$dom.pem" \
             -e CA_SUBJECT="$dom" \
             -e CA_EXPIRE="1000" \
-            -e SSL_SIZE="4096" \
-            -e SSL_KEY="delete_key.pem" \
-            -e SSL_CSR="delete_key.csr" \
-            -e SSL_CERT="delete_cert.pem" \
+            -e SSL_SIZE="1024" \
+            -e SSL_KEY="revoked_key.pem" \
+            -e SSL_CSR="revoked_key.csr" \
+            -e SSL_CERT="revoked_cert.pem" \
             -e SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99" \
         vk496/omgwtfssl
 
-        #Delete stuff
-        echo "DELETE default server cert & keys"
-        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl bash -c 'rm delete*'
+        #Revoke default SSL key
+        echo "REVOKE default server cert & keys"
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl bash -c "openssl ca -config openssl.cnf -revoke revoked_cert.pem -keyfile $dom-key.pem -cert $dom.pem"
         echo "OK"
         
         servicios=(
@@ -125,7 +125,7 @@ if ! sudo -u $SUDO_USER docker volume inspect lego_ca 2>/dev/null >/dev/null; th
     for domain in "${domains[@]}"; do
         dom=$(echo $domain | cut -d: -f1) #Get domain
         
-        #Prepare publica CA certs
+        #Prepare public CA certs
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v lego_ca:/public_ca vk496/omgwtfssl bash -c "cp /certs/$dom.pem /public_ca && cp /certs/$dom.pem /public_ca/\$(openssl x509 -in /certs/$dom.pem -noout -hash).0"
         
         #Generate CRL
