@@ -76,8 +76,7 @@ for domain in "${domains[@]}"; do
             -e SSL_KEY="revoked_key.pem" \
             -e SSL_CSR="revoked_key.csr" \
             -e SSL_CERT="revoked_cert.pem" \
-            -e 
-SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl" \
+            -e SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl" \
         vk496/omgwtfssl
 
         #Revoke default SSL key
@@ -110,8 +109,7 @@ SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl" \
                 -e SSL_SUBJECT="$ip_serv" \
                 -e SSL_DNS="$subdom.$dom.es" \
                 -e SSL_IP="$ip_serv" \
-                -e 
-SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_serv.99/$dom.crl" \
+                -e SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_serv.99/$dom.crl" \
             vk496/omgwtfssl
             
             #Aislate the keys from CA and full chain CA
