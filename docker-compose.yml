@@ -94,13 +94,14 @@ services:
   um_openldap:
     build: ./um/openldap/
     hostname: ldap
-    #domainname: um.es
+    domainname: um.es
     depends_on:
         - "um_snmp"
     environment:
         - LDAP_ORGANISATION=Universidad de Murcia
         - LDAP_DOMAIN=um.es
         - LDAP_ADMIN_PASSWORD=um_password
+        - HOSTNAME=ldap.um.es #Bug
         - LDAP_TLS=true
         - LDAP_TLS_CRT_FILENAME=ldap-cert.pem
         - LDAP_TLS_KEY_FILENAME=ldap-key.pem
@@ -202,13 +203,14 @@ services:
   upm_openldap:
     build: ./upm/openldap/
     hostname: ldap
-    #domainname: upm.es
+    domainname: upm.es
     depends_on:
         - "upm_snmp"
     environment:
         - LDAP_ORGANISATION=Universidad Politecnica de Madrid
         - LDAP_DOMAIN=upm.es
         - LDAP_ADMIN_PASSWORD=upm_password
+        - HOSTNAME=ldap.upm.es #Bug
         - LDAP_TLS=true
         - LDAP_TLS_CRT_FILENAME=ldap-cert.pem
         - LDAP_TLS_KEY_FILENAME=ldap-key.pem
