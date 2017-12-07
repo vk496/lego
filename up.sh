@@ -15,7 +15,12 @@ done
 #Root 
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
-while getopts ":m :b" opt; do
+help_usage() {
+            echo "Invalid option: -$OPTARG" >&2
+            echo -e "Use:\n $0 -b \n $0 -m iface1 -m iface2" >&2
+}
+
+while getopts ":m: :b" opt; do
     case $opt in
         b)
             echo "Installing bridge driver"
@@ -24,19 +29,34 @@ while getopts ":m :b" opt; do
             cat .docker-compose.BRIDGE >>docker-compose.yml
         ;;
         m)
-            echo "Installing macvlan driver - Review parent interfaces..."
-            base="$(sed '/# NETWORKS #############################/Q' docker-compose.yml)"
-            echo "$base" >docker-compose.yml
-            cat .docker-compose.MACVLAN >>docker-compose.yml
+            multi+=("$OPTARG")
+            mode_macvlan=1
         ;;
         *)
-            echo "Invalid option: -$OPTARG" >&2
-            echo "Use -b or -m" >&2
+            help_usage
             exit 1
         ;;
     esac
 done
 
+if [ $mode_macvlan ]; then
+
+    if [ ${#multi[@]} -ne 2 ]; then
+        help_usage
+        exit 1
+    fi
+
+    shift $((OPTIND -1))
+
+    echo "Installing macvlan driver - Review parent interfaces..."
+    base="$(sed '/# NETWORKS #############################/Q' docker-compose.yml)"
+    echo "$base" >docker-compose.yml
+    cat .docker-compose.MACVLAN >>docker-compose.yml
+
+    sed -i "s/enp1s0.3/${multi[0]}/g" docker-compose.yml
+    sed -i "s/enp1s0.4/${multi[1]}/g" docker-compose.yml
+
+fi
 
 driver=$(sed -n -e '/# NETWORKS #/,$p' docker-compose.yml | grep -i driver: -m1 | cut -d: -f2 | sed 's/ //g')
 
