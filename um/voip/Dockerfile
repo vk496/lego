@@ -14,6 +14,7 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
             supervisor \
             snmpd snmp snmp-mibs-downloader \
             nano \
+            libldap2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ENV ASTERISK_VERSION 14.6.2
@@ -117,7 +118,8 @@ RUN cd /usr/src/asterisk-$ASTERISK_VERSION && \
 COPY conf/sip.conf /etc/asterisk/sip.conf
 COPY conf/users.conf /etc/asterisk/users.conf
 COPY conf/extensions.conf /etc/asterisk/extensions.conf
-
+COPY conf/extconfig.conf /etc/asterisk/extconfig.conf
+COPY conf/res_ldap.conf /etc/asterisk/res_ldap.conf
 #Wrapper
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #SNMP

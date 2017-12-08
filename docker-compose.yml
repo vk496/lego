@@ -93,6 +93,7 @@ services:
 
   um_openldap:
     build: ./um/openldap/
+    command: --loglevel info
     hostname: ldap
     domainname: um.es
     depends_on:
@@ -202,6 +203,7 @@ services:
 
   upm_openldap:
     build: ./upm/openldap/
+    command: --loglevel info
     hostname: ldap
     domainname: upm.es
     depends_on:

@@ -15,8 +15,13 @@ dn: uid=user1,ou=Personas,dc=upm,dc=es
 cn: Juan
 sn: Perez
 mail: user1@upm.es
-mobile: 252001
+AstAccountContext: upm
+AstAccountNAT: no
+AstAccountType: friend
+AstAccountHost: dynamic
+AstAccountCallerID: 252001
 objectClass: inetOrgPerson
+objectClass: AsteriskSIPUser
 objectclass: top
 userPassword: password1
 
@@ -25,8 +30,13 @@ dn: uid=user2,ou=Personas,dc=upm,dc=es
 cn: Sofia
 sn: Martinez
 mail: user2@upm.es
-mobile: 252002
+AstAccountContext: upm
+AstAccountNAT: no
+AstAccountType: friend
+AstAccountHost: dynamic
+AstAccountCallerID: 252002
 objectClass: inetOrgPerson
+objectClass: AsteriskSIPUser
 objectclass: top
 userPassword: password2
 
@@ -35,8 +45,13 @@ dn: uid=user3,ou=Personas,dc=upm,dc=es
 cn: Leticia
 sn: Gutierrez
 mail: user3@upm.es
-mobile: 252003
+AstAccountContext: upm
+AstAccountNAT: no
+AstAccountType: friend
+AstAccountHost: dynamic
+AstAccountCallerID: 252003
 objectClass: inetOrgPerson
+objectClass: AsteriskSIPUser
 objectclass: top
 userPassword: password3
 
@@ -58,6 +73,20 @@ member: uid=user2,ou=Personas,dc=upm,dc=es
 # Radius
 dn: cn=radius,ou=Servicios,dc=upm,dc=es
 cn: radius
+objectclass: groupOfNames
+objectclass: top
+member: uid=user1,ou=Personas,dc=upm,dc=es
+member: uid=user2,ou=Personas,dc=upm,dc=es
+
+
+# Asterisk
+# AstAccountContext: CONTEXTO
+# AstAccountNAT: NAT
+# AstAccountType: friend
+# AstAccountHost: dynamic
+# AstAccountCallerID: NÚMERO
+dn: cn=asterisk,ou=Servicios,dc=upm,dc=es
+cn: asterisk
 objectclass: groupOfNames
 objectclass: top
 member: uid=user1,ou=Personas,dc=upm,dc=es
