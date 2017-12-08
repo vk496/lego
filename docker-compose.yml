@@ -130,6 +130,7 @@ services:
     domainname: um.es
     depends_on:
         - "um_snmp"
+        - "um_openldap"
     volumes:
         - um-certs-voip:/certs
         - lego_ca:/ca_ssl
