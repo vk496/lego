@@ -108,6 +108,7 @@ for domain in "${domains[@]}"; do
             "owncloud:$ip_range.5"
             "voip:$ip_range.2"
             "ldap:$ip_range.6"
+            "radius:$ip_range.3"
         )
         
         for servicio in "${servicios[@]}"; do
@@ -133,7 +134,7 @@ for domain in "${domains[@]}"; do
             vk496/omgwtfssl
             
             #Aislate the keys from CA and full chain CA
-            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs && cat /certs/{$subdom-cert.pem,$dom.pem} > /service_certs/$subdom-cert-full.pem"
+            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs && cat /certs/{$subdom-cert.pem,$dom.pem} > /service_certs/$subdom-cert-full.pem && openssl dhparam -out /service_certs/dh 2048"
         done
     fi
         

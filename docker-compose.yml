@@ -51,6 +51,8 @@ services:
     build: ./um/radius/
     hostname: radius
     domainname: um.es
+    volumes:
+        - um-certs-radius:/etc/freeradius/keys/
     depends_on:
         - "um_snmp"
         - "um_openldap"
@@ -194,6 +196,8 @@ services:
     build: ./upm/radius/
     hostname: radius
     domainname: upm.es
+    volumes:
+        - upm-certs-radius:/etc/freeradius/keys/
     depends_on:
         - "upm_snmp"
     networks:
@@ -247,6 +251,9 @@ volumes:
     um-certs-ldap:
         external:
             name: "um-certs-ldap"
+    um-certs-radius:
+        external:
+            name: "um-certs-radius"
             
     upm-certs:
         external:
@@ -260,6 +267,9 @@ volumes:
     upm-certs-ldap:
         external:
             name: "upm-certs-ldap"
+    upm-certs-radius:
+        external:
+            name: "upm-certs-radius"
 
 # NETWORKS ################################
 networks:
