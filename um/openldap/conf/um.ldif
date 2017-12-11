@@ -21,8 +21,10 @@ AstAccountNAT: no
 AstAccountType: friend
 AstAccountHost: dynamic
 AstAccountCallerID: 251001
+radiusFramedMTU: 999
 objectClass: inetOrgPerson
 objectClass: AsteriskSIPUser
+objectClass: radiusprofile
 objectclass: top
 userPassword: password1
 
@@ -72,6 +74,8 @@ member: uid=user2,ou=Personas,dc=um,dc=es
 
 
 # Radius
+#### radiusprofile
+# radiusFramedMTU
 dn: cn=radius,ou=Servicios,dc=um,dc=es
 cn: radius
 objectclass: groupOfNames
@@ -81,6 +85,7 @@ member: uid=user2,ou=Personas,dc=um,dc=es
 
 
 # Asterisk
+#### AsteriskSIPUser
 # AstAccountContext: CONTEXTO
 # AstAccountNAT: NAT
 # AstAccountType: friend
