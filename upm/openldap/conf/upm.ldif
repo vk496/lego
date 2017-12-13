@@ -12,8 +12,8 @@ objectclass: organizationalunit
 ########### USUARIOS ##########################
 #############################################
 dn: uid=user1,ou=Personas,dc=upm,dc=es
-cn: Juan
-sn: Perez
+cn: Pedro
+sn: Lopez
 mail: user1@upm.es
 AstAccountContext: upm
 AstAccountNAT: no
@@ -27,8 +27,8 @@ userPassword: password1
 
 
 dn: uid=user2,ou=Personas,dc=upm,dc=es
-cn: Sofia
-sn: Martinez
+cn: Ana
+sn: Gonzalez
 mail: user2@upm.es
 AstAccountContext: upm
 AstAccountNAT: no
@@ -42,8 +42,8 @@ userPassword: password2
 
 
 dn: uid=user3,ou=Personas,dc=upm,dc=es
-cn: Leticia
-sn: Gutierrez
+cn: Manolo
+sn: Cabezabolo
 mail: user3@upm.es
 AstAccountContext: upm
 AstAccountNAT: no

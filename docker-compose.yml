@@ -73,11 +73,6 @@ services:
         - "um_openldap"
         - "um_crl"
         - "um_snmp"
-    links:
-        - um_db:owncloud-db
-    ports:
-        - "80:80"
-        - "443:443"
     environment:
         - OWNCLOUD_DB_HOST=db.um.es
         - OWNCLOUD_DB_TYPE=pgsql
@@ -230,6 +225,47 @@ services:
             aliases:
                 - ldap.upm.es
             ipv4_address: 192.168.252.6
+
+  upm_owncloud:
+    build: ./upm/owncloud
+    hostname: owncloud
+    domainname: upm.es
+    volumes:
+        - upm-certs-owncloud:/etc/apache2/keys/
+    depends_on:
+        - "upm_db"
+        - "upm_openldap"
+        - "upm_crl"
+        - "upm_snmp"
+    environment:
+        - OWNCLOUD_DB_HOST=db.upm.es
+        - OWNCLOUD_DB_TYPE=pgsql
+        - OWNCLOUD_DB_NAME=owncloud
+        - OWNCLOUD_DB_USERNAME=postgres
+        - OWNCLOUD_DB_PASSWORD=owncloud
+        - OWNCLOUD_ADMIN_USERNAME=owncloud
+        - OWNCLOUD_ADMIN_PASSWORD=owncloud
+        - OWNCLOUD_VOLUME_CERTS=/etc/apache2/keys/
+    networks:
+        red2:
+            aliases:
+                - owncloud.upm.es
+            ipv4_address: 192.168.252.5
+
+  upm_db:
+    image: postgres:10-alpine
+    hostname: db
+    domainname: upm.es
+    environment:
+        - POSTGRES_PASSWORD=owncloud
+    networks:
+        red2:
+            aliases:
+                - db.upm.es
+            ipv4_address: 192.168.252.4
+
+
+
 
 # PERSISTENCE ###############################
 
