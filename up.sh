@@ -83,27 +83,6 @@ for domain in "${domains[@]}"; do
         dom=$(echo $domain | cut -d: -f1) #Get domain
         ip_range=$(echo $domain | cut -d: -f2) #Get IP range
         
-    if ! sudo -u $SUDO_USER docker volume inspect $dom-certs 2>/dev/null >/dev/null; then        
-        sudo -u $SUDO_USER docker volume create $dom-certs #All certs
-        
-        #Generate CA
-        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
-            -e CA_KEY="$dom-key.pem" \
-            -e CA_CERT="$dom.pem" \
-            -e CA_SUBJECT="$dom" \
-            -e CA_EXPIRE="1000" \
-            -e SSL_SIZE="1024" \
-            -e SSL_KEY="revoked_key.pem" \
-            -e SSL_CSR="revoked_key.csr" \
-            -e SSL_CERT="revoked_cert.pem" \
-            -e SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl" \
-        vk496/omgwtfssl
-
-        #Revoke default SSL key
-        echo "REVOKE default server cert & keys"
-        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl bash -c "openssl ca -config openssl.cnf -revoke revoked_cert.pem -keyfile $dom-key.pem -cert $dom.pem"
-        echo "OK"
-        
         servicios=(
             "owncloud:$ip_range.5"
             "voip:$ip_range.2"
@@ -111,33 +90,87 @@ for domain in "${domains[@]}"; do
             "radius:$ip_range.3"
         )
         
+        #GENERAL SSL ARGUMENTS
+        LEGO_CA_KEY="$dom-key.pem"
+        LEGO_CA_CERT="$dom.pem"
+        LEGO_CA_SUBJECT="$dom"
+        LEGO_CA_EXPIRE="10000"
+        LEGO_SSL_CONFIG="openssl.cnf"
+        LEGO_SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl"
+        LEGO_SSL_SIZE="2048"
+        LEGO_SSL_EXPIRE="360"
+            
+    if ! sudo -u $SUDO_USER docker volume inspect $dom-certs 2>/dev/null >/dev/null; then        
+        sudo -u $SUDO_USER docker volume create $dom-certs #All certs
+        
+        #Generate CA
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
+            -e CA_KEY="$LEGO_CA_KEY" \
+            -e CA_CERT="$LEGO_CA_CERT" \
+            -e CA_SUBJECT="$LEGO_CA_SUBJECT" \
+            -e CA_EXPIRE="$LEGO_CA_EXPIRE" \
+            -e SSL_SIZE="1024" \
+            -e SSL_KEY="revoked_key.pem" \
+            -e SSL_CSR="revoked_key.csr" \
+            -e SSL_CERT="revoked_cert.pem" \
+            -e SSL_CRL="$LEGO_SSL_CRL" \
+        vk496/omgwtfssl
+
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl cat $dom.pem > $dom.pem #Get CA outside Docker
+        
+        #Revoke default SSL key
+        echo "REVOKE default server cert & keys"
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl bash -c "openssl ca -config openssl.cnf -revoke revoked_cert.pem -keyfile $LEGO_CA_KEY -cert $LEGO_CA_CERT"
+        echo "OK"
+        
         for servicio in "${servicios[@]}"; do
             subdom=$(echo $servicio | cut -d: -f1) #Get domain of service
             ip_serv=$(echo $servicio | cut -d: -f2) #Get ip of service
+            
+            LEGO_SSL_KEY="$subdom-key.pem"
+            LEGO_SSL_CSR="$subdom-key.csr"
+            LEGO_SSL_CERT="$subdom-cert.pem"
+            LEGO_SSL_SUBJECT="$ip_serv"
+            LEGO_SSL_DNS="$subdom.$dom.es"
+            LEGO_SSL_IP="$ip_serv"
             
             sudo -u $SUDO_USER docker volume create $dom-certs-$subdom #Service certs
             
             #Generate cert
             sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
-                -e CA_KEY="$dom-key.pem" \
-                -e CA_CERT="$dom.pem" \
-                -e CA_SUBJECT="$dom" \
-                -e SSL_KEY="$subdom-key.pem" \
-                -e SSL_CSR="$subdom-key.csr" \
-                -e SSL_CERT="$subdom-cert.pem" \
-                -e SSL_SIZE="2048" \
-                -e SSL_EXPIRE="360" \
-                -e SSL_SUBJECT="$ip_serv" \
-                -e SSL_DNS="$subdom.$dom.es" \
-                -e SSL_IP="$ip_serv" \
-                -e SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_serv.99/$dom.crl" \
+                -e CA_KEY="$LEGO_CA_KEY" \
+                -e CA_CERT="$LEGO_CA_CERT" \
+                -e CA_SUBJECT="$LEGO_CA_SUBJECT" \
+                -e SSL_KEY="$LEGO_SSL_KEY" \
+                -e SSL_CSR="$LEGO_SSL_CSR" \
+                -e SSL_CERT="$LEGO_SSL_CERT" \
+                -e SSL_SIZE="$LEGO_SSL_SIZE" \
+                -e SSL_EXPIRE="$LEGO_SSL_EXPIRE" \
+                -e SSL_SUBJECT="$LEGO_SSL_SUBJECT" \
+                -e SSL_DNS="$LEGO_SSL_DNS" \
+                -e SSL_IP="$LEGO_SSL_IP" \
+                -e SSL_CRL="$LEGO_SSL_CRL" \
             vk496/omgwtfssl
             
             #Aislate the keys from CA and full chain CA
-            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs && cat /certs/{$subdom-cert.pem,$dom.pem} > /service_certs/$subdom-cert-full.pem && openssl dhparam -out /service_certs/dh 2048"
+            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$LEGO_CA_CERT} /service_certs && cat /certs/{$LEGO_SSL_CERT,$LEGO_CA_CERT} > /service_certs/$subdom-cert-full.pem && openssl dhparam -out /service_certs/dh 2048"
         done
     fi
+     
+    if ! sudo -u $SUDO_USER docker volume inspect $dom-certs-user 2>/dev/null >/dev/null; then
+        sudo -u $SUDO_USER docker volume create $dom-certs-user #Public CA keys
+                
+        #Generate User certificates
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-user:/certs_user vk496/omgwtfssl bash -ce "\
+            openssl genrsa -out /certs_user/user-key.pem $LEGO_SSL_SIZE > /dev/null && \
+            openssl req -new -key /certs_user/user-key.pem -out /certs_user/user-key.csr -subj \"/CN=$dom-user\" -config ${LEGO_SSL_CONFIG} > /dev/null && \
+            openssl x509 -req -in /certs_user/user-key.csr -CA ${LEGO_CA_CERT} -CAkey ${LEGO_CA_KEY} -CAcreateserial -out /certs_user/user-cert.pem -days ${LEGO_SSL_EXPIRE} -extensions usr_cert -extfile ${LEGO_SSL_CONFIG} > /dev/null"
         
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs-user:/certs vk496/omgwtfssl cat user-cert.pem > $dom-user-cert.pem #Get cert outside docker
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs-user:/certs vk496/omgwtfssl cat user-key.pem > $dom-user-key.pem #Get keys outside docker
+            
+    fi
+     
 done
 
 if ! sudo -u $SUDO_USER docker volume inspect lego_ca 2>/dev/null >/dev/null; then
@@ -154,7 +187,7 @@ if ! sudo -u $SUDO_USER docker volume inspect lego_ca 2>/dev/null >/dev/null; th
         
     done
 fi
-
+exit
 sudo -u $SUDO_USER docker-compose up --build -d #Deploy services
 
 sudo sysctl -w net.ipv4.ip_forward=1 #Enable IP Forwarding
