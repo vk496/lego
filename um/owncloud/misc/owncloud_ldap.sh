@@ -3,7 +3,7 @@ set -e
 
 #CRLs
 mkdir /etc/apache2/crl
-wget http://crl.um.es/um.crl -P /etc/apache2/crl
+wget http://distribution.um.es/um.crl -P /etc/apache2/crl
 
 
 supervisorctl start owncloud
