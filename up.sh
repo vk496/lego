@@ -160,7 +160,7 @@ for domain in "${domains[@]}"; do
             if [[ $subdom == "distribution" ]]; then #distribution must have special extension. Resign
                 echo "Special resign for distribution service"
                 sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
-                    vk496/omgwtfssl bash -c "openssl ca -batch -config ${LEGO_SSL_CONFIG} -keyfile ${LEGO_CA_KEY} -cert ${LEGO_CA_CERT} -outdir . -in ${LEGO_SSL_CSR} -out ${LEGO_SSL_CERT} -extensions v3_OCSP -create_serial -extfile ${LEGO_SSL_CONFIG} -days ${LEGO_SSL_EXPIRE} -notext"
+                    vk496/omgwtfssl bash -c "openssl ca -batch -config ${LEGO_SSL_CONFIG} -keyfile ${LEGO_CA_KEY} -cert ${LEGO_CA_CERT} -outdir . -in ${LEGO_SSL_CSR} -out ${LEGO_SSL_CERT} -extensions v3_OCSP -create_serial -extfile ${LEGO_SSL_CONFIG} -days ${LEGO_SSL_EXPIRE} -notext -preserveDN"
             fi
             
             #Aislate the keys from CA and full chain CA
@@ -175,7 +175,7 @@ for domain in "${domains[@]}"; do
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-user:/certs_user vk496/omgwtfssl bash -ce "\
             openssl genrsa -out /certs_user/user-key.pem $LEGO_SSL_SIZE > /dev/null && \
             openssl req -new -key /certs_user/user-key.pem -out /certs_user/user-key.csr -subj \"/CN=user1@$dom.es\" -config ${LEGO_SSL_CONFIG} > /dev/null && \
-            openssl ca -batch -config ${LEGO_SSL_CONFIG} -keyfile ${LEGO_CA_KEY} -cert ${LEGO_CA_CERT} -outdir . -in /certs_user/user-key.csr -out /certs_user/user-cert.pem -extensions usr_cert -create_serial -extfile ${LEGO_SSL_CONFIG} -days ${LEGO_SSL_EXPIRE} -notext"
+            openssl ca -batch -config ${LEGO_SSL_CONFIG} -keyfile ${LEGO_CA_KEY} -cert ${LEGO_CA_CERT} -outdir . -in /certs_user/user-key.csr -out /certs_user/user-cert.pem -extensions usr_cert -create_serial -extfile ${LEGO_SSL_CONFIG} -days ${LEGO_SSL_EXPIRE} -notext -preserveDN"
         
         sudo -u $SUDO_USER docker run --rm -v $dom-certs-user:/certs vk496/omgwtfssl cat user-cert.pem > $dom-user-cert.pem #Get cert outside docker
         sudo -u $SUDO_USER docker run --rm -v $dom-certs-user:/certs vk496/omgwtfssl cat user-key.pem > $dom-user-key.pem #Get keys outside docker
