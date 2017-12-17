@@ -2,6 +2,7 @@
 set -e
 
 #CRLs
+sleep 4
 mkdir /etc/apache2/crl
 wget http://distribution.um.es/um.crl -P /etc/apache2/crl
 

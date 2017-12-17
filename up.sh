@@ -98,7 +98,7 @@ for domain in "${domains[@]}"; do
         LEGO_CA_EXPIRE="10000"
         LEGO_SSL_CONFIG="openssl.cnf"
         LEGO_SSL_CRL="http://distribution.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl"
-        LEGO_SSL_OCSP="http://distribution.$dom.es:8080,http://$ip_range.99:8080"
+        LEGO_SSL_OCSP="http://$ip_range.99:8080,http://distribution.$dom.es:8080"
         LEGO_SSL_SIZE="2048"
         LEGO_SSL_EXPIRE="360"
             
