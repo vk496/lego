@@ -84,6 +84,7 @@ for domain in "${domains[@]}"; do
         ip_range=$(echo $domain | cut -d: -f2) #Get IP range
         
         servicios=(
+            "distribution:$ip_range.99"
             "owncloud:$ip_range.5"
             "voip:$ip_range.2"
             "ldap:$ip_range.6"
@@ -96,7 +97,8 @@ for domain in "${domains[@]}"; do
         LEGO_CA_SUBJECT="$dom"
         LEGO_CA_EXPIRE="10000"
         LEGO_SSL_CONFIG="openssl.cnf"
-        LEGO_SSL_CRL="http://crl.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl"
+        LEGO_SSL_CRL="http://distribution.$dom.es/$dom.crl,http://$ip_range.99/$dom.crl"
+        LEGO_SSL_OCSP="http://distribution.$dom.es:8080,http://$ip_range.99:8080"
         LEGO_SSL_SIZE="2048"
         LEGO_SSL_EXPIRE="360"
             
@@ -114,6 +116,7 @@ for domain in "${domains[@]}"; do
             -e SSL_CSR="revoked_key.csr" \
             -e SSL_CERT="revoked_cert.pem" \
             -e SSL_CRL="$LEGO_SSL_CRL" \
+            -e SSL_OCSP="$LEGO_SSL_OCSP" \
         vk496/omgwtfssl
 
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl cat $dom.pem > $dom.pem #Get CA outside Docker
@@ -150,13 +153,21 @@ for domain in "${domains[@]}"; do
                 -e SSL_DNS="$LEGO_SSL_DNS" \
                 -e SSL_IP="$LEGO_SSL_IP" \
                 -e SSL_CRL="$LEGO_SSL_CRL" \
+                -e SSL_OCSP="$LEGO_SSL_OCSP" \
             vk496/omgwtfssl
             
+            
+            if [[ $subdom == "distribution" ]]; then #distribution must have special extension. Resign
+                echo "Special resign for distribution service"
+                sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
+                    vk496/omgwtfssl bash -c "openssl x509 -req -in ${LEGO_SSL_CSR} -CA ${LEGO_CA_CERT} -CAkey ${LEGO_CA_KEY} -CAcreateserial -out ${LEGO_SSL_CERT} -days ${LEGO_SSL_EXPIRE} -extensions v3_OCSP -extfile ${LEGO_SSL_CONFIG} > /dev/null"
+            fi
+            
             #Aislate the keys from CA and full chain CA
-            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs && cat /certs/{$subdom-cert.pem,$dom.pem} > /service_certs/$subdom-cert-full.pem && openssl dhparam -out /service_certs/dh 2048"
+            sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs && cat /certs/{$subdom-cert.pem,$dom.pem} > /service_certs/$subdom-cert-full.pem && openssl dhparam -out /service_certs/dh 1024"
         done
     fi
-     
+    
     if ! sudo -u $SUDO_USER docker volume inspect $dom-certs-user 2>/dev/null >/dev/null; then
         sudo -u $SUDO_USER docker volume create $dom-certs-user #Public CA keys
                 
@@ -183,7 +194,7 @@ if ! sudo -u $SUDO_USER docker volume inspect lego_ca 2>/dev/null >/dev/null; th
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v lego_ca:/public_ca vk496/omgwtfssl bash -c "cp /certs/$dom.pem /public_ca && cp /certs/$dom.pem /public_ca/\$(openssl x509 -in /certs/$dom.pem -noout -hash).0"
         
         #Generate CRL
-        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v lego_ca:/public_ca vk496/omgwtfssl bash -c "openssl ca -gencrl -config /certs/openssl.cnf -keyfile /certs/$dom-key.pem -cert $dom.pem -out /public_ca/$dom.crl"
+        sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-distribution:/distribution vk496/omgwtfssl bash -c "openssl ca -gencrl -config /certs/openssl.cnf -keyfile /certs/$dom-key.pem -cert $dom.pem -out /distribution/$dom.crl && cp .db.pem /distribution/"
         
     done
 fi

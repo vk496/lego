@@ -11,18 +11,17 @@ services:
         - um-certs:/certs
     network_mode: none
 
-  um_crl:
-    image: halverneus/static-file-server
-    hostname: crl
+  um_distribution:
+    build: ./um/distribution/
+    hostname: distribution
     domainname: um.es
-    environment:
-        - PORT=80
     volumes:
         - lego_ca:/web
+        - um-certs-distribution:/certs
     networks:
         red1:
             aliases:
-                - crl.um.es
+                - distribution.um.es
             ipv4_address: 192.168.251.99
 
   um_snmp:
@@ -71,7 +70,7 @@ services:
     depends_on:
         - "um_db"
         - "um_openldap"
-        - "um_crl"
+        - "um_distribution"
         - "um_snmp"
     environment:
         - OWNCLOUD_DB_HOST=db.um.es
@@ -147,18 +146,17 @@ services:
         - upm-certs:/certs
     network_mode: none
 
-  upm_crl:
-    image: halverneus/static-file-server
-    hostname: crl
+  upm_distribution:
+    build: ./upm/distribution/
+    hostname: distribution
     domainname: upm.es
-    environment:
-        - PORT=80
     volumes:
         - lego_ca:/web
+        - upm-certs-distribution:/certs
     networks:
         red2:
             aliases:
-                - crl.upm.es
+                - distribution.upm.es
             ipv4_address: 192.168.252.99
 
   upm_snmp:
@@ -235,7 +233,7 @@ services:
     depends_on:
         - "upm_db"
         - "upm_openldap"
-        - "upm_crl"
+        - "upm_distribution"
         - "upm_snmp"
     environment:
         - OWNCLOUD_DB_HOST=db.upm.es
@@ -278,6 +276,9 @@ volumes:
     um-certs:
         external:
             name: "um-certs"
+    um-certs-distribution:
+        external:
+            name: "um-certs-distribution"
     um-certs-voip:
         external:
             name: "um-certs-voip"
@@ -294,6 +295,9 @@ volumes:
     upm-certs:
         external:
             name: "upm-certs"
+    upm-certs-distribution:
+        external:
+            name: "upm-certs-distribution"
     upm-certs-voip:
         external:
             name: "upm-certs-voip"
