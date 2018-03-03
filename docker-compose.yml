@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
 
 # Org1 #####################################
@@ -18,6 +18,10 @@ services:
     volumes:
         - lego_ca:/web
         - um-certs-distribution:/certs
+    env_file:
+        - '.router/var.env'
+    cap_add:
+        - NET_ADMIN
     networks:
         red1:
             aliases:
@@ -31,6 +35,10 @@ services:
             - SNMP_VERSION=5.7.1
     hostname: snmp
     domainname: um.es
+    env_file:
+        - '.router/var.env'
+    cap_add:
+        - NET_ADMIN
     networks:
         red1:
             aliases:
@@ -43,6 +51,10 @@ services:
     domainname: um.es
     environment:
         - POSTGRES_PASSWORD=owncloud
+    env_file:
+        - '.router/var.env'
+    cap_add:
+        - NET_ADMIN
     networks:
         red1:
             aliases:
@@ -58,6 +70,10 @@ services:
     depends_on:
         - "um_snmp"
         - "um_openldap"
+    env_file:
+        - '.router/var.env'
+    cap_add:
+        - NET_ADMIN
     networks:
         red1:
             aliases:
@@ -84,6 +100,10 @@ services:
         - OWNCLOUD_ADMIN_USERNAME=owncloud
         - OWNCLOUD_ADMIN_PASSWORD=owncloud
         - OWNCLOUD_VOLUME_CERTS=/etc/apache2/keys/
+    env_file:
+        - '.router/var.env'
+    cap_add:
+        - NET_ADMIN
     networks:
         red1:
             aliases:
@@ -109,6 +129,10 @@ services:
         - LDAP_TLS_ENFORCE=false
     volumes:
         - um-certs-ldap:/container/service/slapd/assets/certs
+    env_file:
+        - '.router/var.env'
+    cap_add:
+        - NET_ADMIN
     networks:
         red1:
             aliases:
@@ -119,6 +143,10 @@ services:
     build: ./um/pc1/
     depends_on:
         - "um_snmp"
+    env_file:
+        - '.router/var.env'
+    cap_add:
+        - NET_ADMIN
     networks:
         red1:
             ipv4_address: 192.168.251.20
@@ -133,12 +161,28 @@ services:
     volumes:
         - um-certs-voip:/certs
         - lego_ca:/ca_ssl
+    cap_add:
+        - NET_ADMIN
+    env_file:
+        - '.router/var.env'
     networks:
         red1:
             aliases:
                 - voip.um.es
             ipv4_address: 192.168.251.2
 
+  um_router:
+    build: ./um/router/
+    hostname: router
+    domainname: um.es
+    cap_add:
+        - NET_ADMIN
+    networks:
+        red1:
+            aliases:
+                - router.um.es
+            ipv4_address: 192.168.251.254
+            
 # Org2 #####################################
 
   upm_ca:
@@ -287,16 +331,6 @@ services:
             aliases:
                 - msf.upm.es
             ipv4_address: 192.168.252.66
-
-  upm_router:
-    image: alpine
-    stdin_open: true
-    tty: true
-    cap_add:
-        - NET_ADMIN
-    networks:
-        red2:
-            ipv4_address: 192.168.252.254
             
 # PERSISTENCE ###############################
 
@@ -353,6 +387,7 @@ networks:
     ipam:
      config:
        - subnet: 192.168.251.0/24
+         gateway: 192.168.251.1
 
   red2:
     driver: bridge
