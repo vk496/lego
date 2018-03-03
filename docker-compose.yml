@@ -275,6 +275,8 @@ services:
     domainname: upm.es
     stdin_open: true
     tty: true
+    cap_add:
+        - NET_ADMIN
     depends_on:
         - "upm_db"
     environment:
@@ -286,6 +288,16 @@ services:
                 - msf.upm.es
             ipv4_address: 192.168.252.66
 
+  upm_router:
+    image: alpine
+    stdin_open: true
+    tty: true
+    cap_add:
+        - NET_ADMIN
+    networks:
+        red2:
+            ipv4_address: 192.168.252.254
+            
 # PERSISTENCE ###############################
 
 volumes:
