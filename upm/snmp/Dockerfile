@@ -35,17 +35,20 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
 && rm -rf /var/lib/apt/lists/* \
 && rm -rf /var/cache/oracle-jdk8-installer
 
-ENV SNMP_VERSION 5.6.2
+ARG SNMP_VERSION=5.6.2
+ENV SNMP_VERSION_BUILD=$SNMP_VERSION
 
-RUN wget -P /usr/src/ https://sourceforge.net/projects/net-snmp/files/net-snmp/$SNMP_VERSION/net-snmp-$SNMP_VERSION.tar.gz && tar --directory /usr/src/ -xvf /usr/src/net-snmp-$SNMP_VERSION.tar.gz
+ENV SNMP_URL https://sourceforge.mirrorservice.org/n/ne/net-snmp/net-snmp/$SNMP_VERSION_BUILD/net-snmp-$SNMP_VERSION_BUILD.tar.gz
+
+RUN wget -P /usr/src/ $SNMP_URL && tar --directory /usr/src/ -xvf /usr/src/net-snmp-$SNMP_VERSION_BUILD.tar.gz
 
 # Configure
-RUN cd /usr/src/net-snmp-$SNMP_VERSION && \
+RUN cd /usr/src/net-snmp-$SNMP_VERSION_BUILD && \
         ./configure \
             --with-security-modules=tsm \
             --with-transports="DTLSUDP TLSTCP" \
             --with-default-snmp-version=3 \
-            --with-sys-contact=admin@um.es \
+            --with-sys-contact=admin@upm.es \
             --with-sys-location=Murcia \
             --with-logfile=/var/log/snmpd.log \
             --with-persistent-directory=/var/net-snmp \

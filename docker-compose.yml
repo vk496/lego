@@ -25,7 +25,10 @@ services:
             ipv4_address: 192.168.251.99
 
   um_snmp:
-    build: ./um/snmp/
+    build:
+        context: ./um/snmp/
+        args:
+            - SNMP_VERSION=5.7.1
     hostname: snmp
     domainname: um.es
     networks:
@@ -160,7 +163,10 @@ services:
             ipv4_address: 192.168.252.99
 
   upm_snmp:
-    build: ./upm/snmp/
+    build:
+        context: ./upm/snmp/
+        args:
+            - SNMP_VERSION=5.7.1
     hostname: snmp
     domainname: upm.es
     networks:
@@ -263,7 +269,22 @@ services:
             ipv4_address: 192.168.252.4
 
 
-
+  upm_msf:
+    image: vk496/alpine-metasploit
+    hostname: msf
+    domainname: upm.es
+    stdin_open: true
+    tty: true
+    depends_on:
+        - "upm_db"
+    environment:
+        - DB_PORT_5432_TCP_ADDR=db.upm.es
+        - PGPASSWORD=owncloud
+    networks:
+        red2:
+            aliases:
+                - msf.upm.es
+            ipv4_address: 192.168.252.66
 
 # PERSISTENCE ###############################
 

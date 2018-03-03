@@ -45,6 +45,7 @@ dn: uid=user3,ou=Personas,dc=upm,dc=es
 cn: Manolo
 sn: Cabezabolo
 mail: user3@upm.es
+registeredAddress: 14A79F59
 AstAccountContext: upm
 AstAccountNAT: no
 AstAccountType: friend
@@ -91,3 +92,12 @@ objectclass: groupOfNames
 objectclass: top
 member: uid=user1,ou=Personas,dc=upm,dc=es
 member: uid=user2,ou=Personas,dc=upm,dc=es
+
+
+# RFID Access
+dn: cn=rfid,ou=Servicios,dc=upm,dc=es
+cn: rfid
+objectclass: groupOfNames
+objectclass: top
+member: uid=user2,ou=Personas,dc=upm,dc=es
+member: uid=user3,ou=Personas,dc=upm,dc=es
