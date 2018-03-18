@@ -50,7 +50,7 @@ services:
             ipv4_address: 192.168.251.100
 
   um_db:
-    image: postgres:10-alpine
+    build: ./um/db/
     hostname: db
     domainname: um.es
     depends_on:
@@ -368,7 +368,7 @@ services:
             ipv4_address: 192.168.252.5
 
   upm_db:
-    image: postgres:10-alpine
+    build: ./upm/db/
     hostname: db
     domainname: upm.es
     depends_on:
@@ -387,7 +387,7 @@ services:
 
 
   upm_msf:
-    image: vk496/alpine-metasploit
+    build: ./um/metasploitable2/
     hostname: msf
     domainname: upm.es
     stdin_open: true
