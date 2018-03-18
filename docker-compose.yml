@@ -15,11 +15,13 @@ services:
     build: ./um/distribution/
     hostname: distribution
     domainname: um.es
+    depends_on:
+      - "um_router"
     volumes:
         - lego_ca:/web
         - um-certs-distribution:/certs
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
     networks:
@@ -35,8 +37,10 @@ services:
             - SNMP_VERSION=5.7.1
     hostname: snmp
     domainname: um.es
+    depends_on:
+      - "um_router"
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
     networks:
@@ -49,10 +53,12 @@ services:
     image: postgres:10-alpine
     hostname: db
     domainname: um.es
+    depends_on:
+      - "um_router"
     environment:
         - POSTGRES_PASSWORD=owncloud
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
     networks:
@@ -70,8 +76,9 @@ services:
     depends_on:
         - "um_snmp"
         - "um_openldap"
+        - "um_router"
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
     networks:
@@ -91,6 +98,7 @@ services:
         - "um_openldap"
         - "um_distribution"
         - "um_snmp"
+        - "um_router"
     environment:
         - OWNCLOUD_DB_HOST=db.um.es
         - OWNCLOUD_DB_TYPE=pgsql
@@ -101,7 +109,7 @@ services:
         - OWNCLOUD_ADMIN_PASSWORD=owncloud
         - OWNCLOUD_VOLUME_CERTS=/etc/apache2/keys/
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
     networks:
@@ -117,6 +125,7 @@ services:
     domainname: um.es
     depends_on:
         - "um_snmp"
+        - "um_router"
     environment:
         - LDAP_ORGANISATION=Universidad de Murcia
         - LDAP_DOMAIN=um.es
@@ -130,7 +139,7 @@ services:
     volumes:
         - um-certs-ldap:/container/service/slapd/assets/certs
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
     networks:
@@ -143,8 +152,9 @@ services:
     build: ./um/pc1/
     depends_on:
         - "um_snmp"
+        - "um_router"
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
     networks:
@@ -160,6 +170,8 @@ services:
     environment:
       - VNC=true
       - DISPLAY=:0.0
+    env_file:
+      - '.router/um.env'
     volumes:
         - /tmp/.X11-unix:/tmp/.X11-unix
     cap_add:
@@ -180,13 +192,14 @@ services:
     depends_on:
         - "um_snmp"
         - "um_openldap"
+        - "um_router"
     volumes:
         - um-certs-voip:/certs
         - lego_ca:/ca_ssl
     cap_add:
         - NET_ADMIN
     env_file:
-        - '.router/var.env'
+        - '.router/um.env'
     networks:
         red1:
             aliases:
@@ -219,9 +232,15 @@ services:
     build: ./upm/distribution/
     hostname: distribution
     domainname: upm.es
+    depends_on:
+      - "upm_router"
     volumes:
         - lego_ca:/web
         - upm-certs-distribution:/certs
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
@@ -235,6 +254,12 @@ services:
             - SNMP_VERSION=5.7.1
     hostname: snmp
     domainname: upm.es
+    depends_on:
+      - "upm_router"
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
@@ -248,9 +273,14 @@ services:
     depends_on:
         - "upm_openldap"
         - "upm_snmp"
+        - "upm_router"
     volumes:
         - upm-certs-voip:/certs
         - lego_ca:/ca_ssl
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
@@ -265,6 +295,11 @@ services:
         - upm-certs-radius:/etc/freeradius/keys/
     depends_on:
         - "upm_snmp"
+        - "upm_router"
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
@@ -278,6 +313,7 @@ services:
     domainname: upm.es
     depends_on:
         - "upm_snmp"
+        - "upm_router"
     environment:
         - LDAP_ORGANISATION=Universidad Politecnica de Madrid
         - LDAP_DOMAIN=upm.es
@@ -290,6 +326,10 @@ services:
         - LDAP_TLS_ENFORCE=false
     volumes:
         - upm-certs-ldap:/container/service/slapd/assets/certs
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
@@ -307,6 +347,7 @@ services:
         - "upm_openldap"
         - "upm_distribution"
         - "upm_snmp"
+        - "upm_router"
     environment:
         - OWNCLOUD_DB_HOST=db.upm.es
         - OWNCLOUD_DB_TYPE=pgsql
@@ -316,6 +357,10 @@ services:
         - OWNCLOUD_ADMIN_USERNAME=owncloud
         - OWNCLOUD_ADMIN_PASSWORD=owncloud
         - OWNCLOUD_VOLUME_CERTS=/etc/apache2/keys/
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
@@ -326,8 +371,14 @@ services:
     image: postgres:10-alpine
     hostname: db
     domainname: upm.es
+    depends_on:
+      - "upm_router"
     environment:
         - POSTGRES_PASSWORD=owncloud
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
@@ -345,14 +396,29 @@ services:
         - NET_ADMIN
     depends_on:
         - "upm_db"
+        - "upm_router"
     environment:
         - DB_PORT_5432_TCP_ADDR=db.upm.es
         - PGPASSWORD=owncloud
+    env_file:
+      - '.router/upm.env'
     networks:
         red2:
             aliases:
                 - msf.upm.es
             ipv4_address: 192.168.252.66
+
+  upm_router:
+    build: ./upm/router/
+    hostname: router
+    domainname: upm.es
+    cap_add:
+        - NET_ADMIN
+    networks:
+        red2:
+            aliases:
+                - router.upm.es
+            ipv4_address: 192.168.252.254
 
 # PERSISTENCE ###############################
 
@@ -418,3 +484,4 @@ networks:
     ipam:
      config:
        - subnet: 192.168.252.0/24
+         gateway: 192.168.252.1
