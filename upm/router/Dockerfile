@@ -9,5 +9,6 @@ RUN mkdir /var/log/supervisor
 COPY misc/supervisord.conf /etc/supervisord.conf
 COPY conf/route.v4 /etc/iptables_route
 
+COPY conf/route_interlan /usr/bin/
 
 CMD ["/usr/bin/supervisord"]

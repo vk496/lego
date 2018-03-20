@@ -1,0 +1,5 @@
+#!/bin/sh
+
+iptables-restore -n < /etc/iptables_route
+
+ip route add 192.168.251.0/24 via 10.0.0.2
