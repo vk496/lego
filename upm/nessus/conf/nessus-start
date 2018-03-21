@@ -1,0 +1,6 @@
+#!/bin/bash
+set -x
+
+/etc/init.d/nessusd start
+
+/opt/nessus/sbin/nessuscli fetch --register $LICENSE
