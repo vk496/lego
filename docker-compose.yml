@@ -389,7 +389,7 @@ services:
 
 
   upm_msf:
-    build: ./um/metasploitable2/
+    build: ./upm/msf/
     hostname: msf
     domainname: upm.es
     stdin_open: true

@@ -1,0 +1,1 @@
+qemu-img convert -c -p -O qcow2 Metasploitable.vmdk metasploitable2.qcow2
