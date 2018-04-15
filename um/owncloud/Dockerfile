@@ -1,7 +1,7 @@
 FROM owncloud/server:9.1.6
 LABEL maintainer="valiantsin.kivachuk@um.es"
 
-ENV DEBIAN_FRONTEND noninteractive        
+ENV DEBIAN_FRONTEND noninteractive
 
 #TODO ffix duplicated sourcelist
 RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \

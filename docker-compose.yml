@@ -161,29 +161,29 @@ services:
         red1:
             ipv4_address: 192.168.251.20
 
-  um_metasploitable2:
-    build: um/metasploitable2
-    hostname: metasploitable2
-    domainname: um.es
-    depends_on:
-        - "um_router"
-    environment:
-      - VNC=true
-      - DISPLAY=:0.0
-    env_file:
-      - '.router/um.env'
-    volumes:
-        - /tmp/.X11-unix:/tmp/.X11-unix
-    cap_add:
-        - NET_ADMIN
-    devices:
-        - /dev/kvm:/dev/kvm
-        - /dev/net/tun:/dev/net/tun
-    networks:
-        red1:
-            aliases:
-                - metasploitable2.um.es
-            ipv4_address: 192.168.251.111
+  # um_metasploitable2:
+  #   build: um/metasploitable2
+  #   hostname: metasploitable2
+  #   domainname: um.es
+  #   depends_on:
+  #       - "um_router"
+  #   environment:
+  #     - VNC=true
+  #     - DISPLAY=:0.0
+  #   env_file:
+  #     - '.router/um.env'
+  #   volumes:
+  #       - /tmp/.X11-unix:/tmp/.X11-unix
+  #   cap_add:
+  #       - NET_ADMIN
+  #   devices:
+  #       - /dev/kvm:/dev/kvm
+  #       - /dev/net/tun:/dev/net/tun
+  #   networks:
+  #       red1:
+  #           aliases:
+  #               - metasploitable2.um.es
+  #           ipv4_address: 192.168.251.111
 
   um_voip: #VoIP
     build: ./um/voip/

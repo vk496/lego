@@ -1,25 +1,8 @@
-FROM ubuntu:16.04
-
-ENV DEBIAN_FRONTEND noninteractive   
-
-RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
-        echo "deb-src http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
-        apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys DC058F40 && \
-        apt-get update && apt-get --no-install-recommends -y install apt-fast && \
-            apt-fast install -y build-essential git-core pkg-config subversion libjansson-dev sqlite autoconf \
-            automake libtool libxml2-dev libncurses5-dev unixodbc unixodbc-dev libasound2-dev libogg-dev \
-            libvorbis-dev libneon27-dev libspandsp-dev uuid uuid-dev sqlite3 libsqlite3-dev aria2 \
-            libgnutls-dev ca-certificates wget \
-            net-tools \
-            supervisor \
-            snmpd snmp snmp-mibs-downloader \
-            nano \
-            libldap2-dev \
-    && rm -rf /var/lib/apt/lists/*
+FROM vk496/ubuntu-lego
 
 ENV ASTERISK_VERSION 14.6.2
 
-RUN aria2c -x5 -s5 -d /usr/src/ https://github.com/asterisk/asterisk/archive/$ASTERISK_VERSION.tar.gz && tar --directory /usr/src/ -xvf /usr/src/asterisk-$ASTERISK_VERSION.tar.gz 
+RUN aria2c -x5 -s5 -d /usr/src/ https://github.com/asterisk/asterisk/archive/$ASTERISK_VERSION.tar.gz && tar --directory /usr/src/ -xvf /usr/src/asterisk-$ASTERISK_VERSION.tar.gz
 
 # Configure
 RUN cd /usr/src/asterisk-$ASTERISK_VERSION && \
@@ -113,7 +96,7 @@ RUN cd /usr/src/asterisk-$ASTERISK_VERSION && \
         sed -i -e 's/# MAXFILES=/MAXFILES=/' /usr/sbin/safe_asterisk && \
         rm -Rf /usr/src/asterisk*
 
-        
+
 # Copy in default configs
 COPY conf/sip.conf /etc/asterisk/sip.conf
 COPY conf/users.conf /etc/asterisk/users.conf

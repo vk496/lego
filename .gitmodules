@@ -1,0 +1,3 @@
+[submodule "ubuntu-lego"]
+	path = ubuntu-lego
+	url = https://github.com/vk496/ubuntu-lego/
