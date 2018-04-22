@@ -1,5 +1,41 @@
 *filter
-:INPUT ACCEPT [0:0]
+:INPUT DROP [0:0]
+
+#Allow local connections
+-A INPUT -i lo -j ACCEPT
+#Allow input for our previous outgoing traffic
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#Ping
+-A INPUT -p icmp --icmp-type 8 -j ACCEPT
+
+#Owncloud
+-A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT
+
+#SNMP
+-A INPUT -p udp --dport 161 -j ACCEPT
+
+
+
+
 :FORWARD DROP [0:0]
-:OUTPUT ACCEPT [0:0]
+:OUTPUT DROP [0:0]
+
+#Allow local connections
+-A OUTPUT -o lo -j ACCEPT
+#Allow output for our previous incoming traffic
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#DB
+-A OUTPUT -p tcp --dport 5432 -j ACCEPT
+
+#LDAP
+-A OUTPUT -p tcp --dport 389 -j ACCEPT
+
+#SNMP traps
+-A OUTPUT -p udp --dport 162 -j ACCEPT
+
+#SNMP traps
+-A OUTPUT -p tcp --dport 80 -d $HOST_DISTRIBUTION -j ACCEPT
+
 COMMIT
