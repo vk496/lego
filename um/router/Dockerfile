@@ -5,7 +5,8 @@ MAINTAINER Valentín Kivachuk <valiantsin.kivachuk@um.es>
 RUN apk add --no-cache \
         iproute2 \
         supervisor \
-        snort
+        snort \
+        ipfw
 
 RUN mkdir /var/log/supervisor
 

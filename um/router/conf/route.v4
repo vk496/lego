@@ -1,5 +1,4 @@
 *filter
-# Allow all outgoing, but drop incoming and forwarding packets by default
 :INPUT ACCEPT [0:0]
 :FORWARD DROP [0:0]
 :OUTPUT ACCEPT [0:0]
@@ -8,10 +7,6 @@
 COMMIT
 
 *nat
-:PREROUTING ACCEPT [0:0]
-:INPUT ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
 -A POSTROUTING -o eth0 -j MASQUERADE
--A POSTROUTING -o eth1 -j MASQUERADE
 COMMIT
