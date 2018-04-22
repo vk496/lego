@@ -1,5 +1,57 @@
 *filter
-:INPUT ACCEPT [0:0]
+:INPUT DROP [0:0]
+
+#Allow local connections
+-A INPUT -i lo -j ACCEPT
+#Allow input for our previous outgoing traffic
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#Ping
+-A INPUT -p icmp --icmp-type 8 -j ACCEPT
+
+#SIP + SIP_TLS + Asterisk Skinny
+-A INPUT -p tcp -m multiport --dports 5060,5061 -j ACCEPT
+
+#SIP + RTP + IAX2
+-A INPUT -p udp -m multiport --dports 5060,10000:20000,4569 -j ACCEPT
+
+
+###### Disable this services in the future? ######
+# MGCP + Dundi + UNISTIM
+# Skinny
+-A INPUT -p udp -m multiport --dports 2727,4520,5000 -j ACCEPT
+-A INPUT -p udp --dport 2000 -j ACCEPT
+##################################################
+
+#SNMP
+-A INPUT -p udp --dport 161 -j ACCEPT
+
+
+
+
 :FORWARD DROP [0:0]
-:OUTPUT ACCEPT [0:0]
+:OUTPUT DROP [0:0]
+
+#Allow local connections
+-A OUTPUT -o lo -j ACCEPT
+#Allow output for our previous incoming traffic
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+######## OUTGOING Calls ##########################
+#Outgoing calls
+#SIP + SIP_TLS + Asterisk Skinny
+-A OUTPUT -p tcp -m multiport --dports 5060,5061 -j ACCEPT
+
+#SIP + RTP + IAX2
+#-A OUTPUT -p udp -m multiport --dports 5060,10000:20000,4569 -j ACCEPT
+##################################################
+#LDAP + LDAP_TLS
+-A OUTPUT -p tcp -m multiport --dports 389,636 -j ACCEPT
+
+#SNMP traps
+-A OUTPUT -p udp --dport 162 -j ACCEPT
+
+#OCSP + CRL
+-A OUTPUT -p tcp -m multiport --dports 80,8080 -d $HOST_DISTRIBUTION -j ACCEPT
+
 COMMIT
