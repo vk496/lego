@@ -22,6 +22,8 @@ echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /et
         iptables \
 && rm -rf /var/lib/apt/lists/*
 
+RUN apt-fast update && apt-fast install -y runit && rm -rf /var/lib/apt/lists/*
+
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 
@@ -33,4 +35,7 @@ RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
 #Firewall
 COPY conf/firewall.ipv4 /etc/iptables_firewall
 
-CMD ["/usr/bin/supervisord"]
+RUN mkdir /container/service/supervisor && \
+    echo '#!/bin/bash\nexec /usr/bin/supervisord' > /container/service/supervisor/process.sh && \
+    chmod +x /container/service/supervisor/process.sh
+# CMD ["/usr/bin/supervisord"]
