@@ -2,7 +2,7 @@ FROM vk496/openldap
 LABEL maintainer="valiantsin.kivachuk@um.es"
 
 
-ENV DEBIAN_FRONTEND noninteractive        
+ENV DEBIAN_FRONTEND noninteractive
 
 #TODO ffix duplicated sourcelist
 RUN echo "deb http://deb.debian.org/debian stretch main non-free contrib" >> /etc/apt/sources.list && \
@@ -19,6 +19,7 @@ echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /et
         nano \
         supervisor \
         snmpd snmp snmp-mibs-downloader \
+        iptables \
 && rm -rf /var/lib/apt/lists/*
 
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -28,5 +29,8 @@ COPY conf/snmpd.conf /etc/snmp/snmpd.conf
 COPY conf/um.ldif /container/service/slapd/assets/config/bootstrap/ldif/custom/
 
 RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
+
+#Firewall
+COPY conf/firewall.ipv4 /etc/iptables_firewall
 
 CMD ["/usr/bin/supervisord"]

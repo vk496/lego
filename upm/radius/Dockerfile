@@ -17,4 +17,7 @@ COPY conf/modules/ldap /etc/freeradius/modules/ldap
 
 RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
 
+#Firewall
+COPY conf/firewall.ipv4 /etc/iptables_firewall
+
 CMD ["/usr/bin/supervisord"]

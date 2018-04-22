@@ -1,7 +1,7 @@
 FROM owncloud/server:9.1.6
 LABEL maintainer="valiantsin.kivachuk@um.es"
 
-ENV DEBIAN_FRONTEND noninteractive        
+ENV DEBIAN_FRONTEND noninteractive
 
 #TODO ffix duplicated sourcelist
 RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >> /etc/apt/sources.list.d/apt-fast.list && \
@@ -18,6 +18,7 @@ RUN echo "deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu xenial main " >>
         supervisor \
         snmpd snmp snmp-mibs-downloader \
         libldap2-dev \
+        iptables \
 && rm -rf /var/lib/apt/lists/*
 
 
@@ -34,5 +35,8 @@ RUN ln -s /certs/owncloud-key.pem /etc/apache2/keys/ssl-cert.key
 
 COPY conf/apache_sites-available/toppath.conf /root/owncloud/toppath.conf
 COPY conf/apache_sites-available/subpath.conf /root/owncloud/subpath.conf
+
+#Firewall
+COPY conf/firewall.ipv4 /etc/iptables_firewall
 
 CMD ["/usr/bin/supervisord"]
