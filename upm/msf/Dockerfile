@@ -73,4 +73,7 @@ COPY misc/supervisord.conf /etc/supervisord.conf
 
 COPY ./conf/start.sh /usr/local/bin/start.sh
 
+#Small tool
+RUN apk add --no-cache hping3 --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing
+
 CMD ["/usr/bin/supervisord"]
