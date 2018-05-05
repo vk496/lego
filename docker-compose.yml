@@ -24,6 +24,7 @@ services:
         - '.router/um.env'
     cap_add:
         - NET_ADMIN
+    mac_address: 00:11:22:33:44:99
     networks:
         red1:
             aliases:
@@ -43,6 +44,7 @@ services:
         - '.router/um.env'
     cap_add:
         - NET_ADMIN
+    mac_address: 00:11:22:33:44:a0
     networks:
         red1:
             aliases:
@@ -61,6 +63,7 @@ services:
         - '.router/um.env'
     cap_add:
         - NET_ADMIN
+    mac_address: 00:11:22:33:44:04
     networks:
         red1:
             aliases:
@@ -81,6 +84,7 @@ services:
         - '.router/um.env'
     cap_add:
         - NET_ADMIN
+    mac_address: 00:11:22:33:44:03
     networks:
         red1:
             aliases:
@@ -112,6 +116,7 @@ services:
         - '.router/um.env'
     cap_add:
         - NET_ADMIN
+    mac_address: 00:11:22:33:44:05
     networks:
         red1:
             aliases:
@@ -142,6 +147,7 @@ services:
         - '.router/um.env'
     cap_add:
         - NET_ADMIN
+    mac_address: 00:11:22:33:44:06
     networks:
         red1:
             aliases:
@@ -200,6 +206,7 @@ services:
         - NET_ADMIN
     env_file:
         - '.router/um.env'
+    mac_address: 00:11:22:33:44:02
     networks:
         red1:
             aliases:
@@ -212,6 +219,7 @@ services:
     domainname: um.es
     cap_add:
         - NET_ADMIN
+    mac_address: 00:11:22:33:44:fe
     networks:
         red1:
             aliases:
