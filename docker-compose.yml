@@ -213,6 +213,29 @@ services:
                 - voip.um.es
             ipv4_address: 192.168.251.2
 
+  um_msf:
+    build: ./upm/msf/
+    hostname: msf
+    domainname: um.es
+    stdin_open: true
+    tty: true
+    cap_add:
+        - NET_ADMIN
+    depends_on:
+        - "um_db"
+        - "um_router"
+    environment:
+        - DB_PORT_5432_TCP_ADDR=db.um.es
+        - PGPASSWORD=owncloud
+    env_file:
+      - '.router/um.env'
+    networks:
+        red1:
+            aliases:
+                - msf.um.es
+            ipv4_address: 192.168.251.66
+
+
   um_router:
     build: ./um/router/
     hostname: router
@@ -428,7 +451,7 @@ services:
         - "upm_router"
         - "upm_msf"
     environment:
-        - LICENSE=${NESSUS_LICENSE}
+        - LICENSE=
         - ADMIN_USER=admin
         - ADMIN_PASS=admin
     env_file:
