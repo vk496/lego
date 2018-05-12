@@ -25,14 +25,14 @@
 #
 #  Setting "Auth-Type = LDAP" is ALMOST ALWAYS WRONG.  We
 #  really can't emphasize this enough.
-#	
+#
 ldap {
 	#
 	#  Note that this needs to match the name in the LDAP
 	#  server certificate, if you're using ldaps.
 	server = "ldap.um.es"
 	identity = "cn=admin,dc=um,dc=es"
-	password = um_password
+	password = S3cuurreeee_lDAP_P@@@@sssswWWo00o0o0orDDD
 	basedn = "dc=um,dc=es"
 	filter = "(&(uid=%{%{Stripped-User-Name}:-%{User-Name}})(memberof=cn=radius,ou=Servicios,dc=um,dc=es))"
 	#base_filter = "(objectclass=radiusprofile)"
@@ -81,7 +81,7 @@ ldap {
 		# Set this to 'yes' to use TLS encrypted connections
 		# to the LDAP database by using the StartTLS extended
 		# operation.
-		#			
+		#
 		# The StartTLS operation is supposed to be
 		# used with normal ldap connections instead of
 		# using ldaps (port 636) connections
@@ -161,7 +161,7 @@ ldap {
 	#
 	#  THIS WILL ONLY WORK FOR PAP AUTHENTICATION.
 	#
-	#  THIS WILL NOT WORK FOR CHAP, MS-CHAP, or 802.1x (EAP). 
+	#  THIS WILL NOT WORK FOR CHAP, MS-CHAP, or 802.1x (EAP).
 	#
 	#  You can disable this behavior by setting the following
 	#  configuration entry to "no".
@@ -176,7 +176,7 @@ ldap {
 	#
 	#	default: 0x0000 (no debugging messages)
 	#	Example:(LDAP_DEBUG_FILTER+LDAP_DEBUG_CONNS)
-	#ldap_debug = 0x0028 
+	#ldap_debug = 0x0028
 
 	#
 	#  Keepalive configuration.  This MAY NOT be supported by your

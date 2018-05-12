@@ -11,7 +11,7 @@ supervisorctl start owncloud
 
 echo "Waiting owncloud to launch on 80..."
 
-while ! nc -z localhost 80; do   
+while ! nc -z localhost 80; do
   sleep 0.1 # wait for 1/10 of the second before check again
 done
 
@@ -31,7 +31,7 @@ su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ ldap:set-config '' ldapHost ldap.um.es &&\
                                                         php occ ldap:set-config '' ldapPort 389 &&\
                                                         php occ ldap:set-config '' ldapAgentName cn=admin,dc=um,dc=es &&\
-                                                        php occ ldap:set-config '' ldapAgentPassword um_password &&\
+                                                        php occ ldap:set-config '' ldapAgentPassword S3cuurreeee_lDAP_P@@@@sssswWWo00o0o0orDDD &&\
                                                         php occ ldap:set-config '' ldapBase dc=um,dc=es &&\
                                                         php occ ldap:set-config '' ldapUserFilter '(&(|(objectclass=inetOrgPerson))(|(memberof=cn=owncloud,ou=Servicios,dc=um,dc=es)))' &&\
                                                         php occ ldap:set-config '' ldapLoginFilter '(&(&(|(objectclass=inetOrgPerson))(|(memberof=cn=owncloud,ou=Servicios,dc=um,dc=es)))(|(cn=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))' &&\
@@ -45,4 +45,3 @@ su - www-data -s /bin/bash -c "cd /var/www/owncloud/ && \
                                                         php occ ldap:set-config '' ldapBaseUsers dc=um,dc=es &&\
                                                         php occ ldap:set-config '' ldapQuotaAttribute postOfficeBox &&\
                                                         php occ ldap:set-config '' ldapQuotaDefault 1073741824"
-

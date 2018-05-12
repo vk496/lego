@@ -58,7 +58,8 @@ services:
     depends_on:
       - "um_router"
     environment:
-        - POSTGRES_PASSWORD=owncloud
+        - POSTGRES_USER=asystemnormaluser
+        - POSTGRES_PASSWORD=S3curE_P@SsSw0rdd
     env_file:
         - '.router/um.env'
     cap_add:
@@ -107,10 +108,10 @@ services:
         - OWNCLOUD_DB_HOST=db.um.es
         - OWNCLOUD_DB_TYPE=pgsql
         - OWNCLOUD_DB_NAME=owncloud
-        - OWNCLOUD_DB_USERNAME=postgres
-        - OWNCLOUD_DB_PASSWORD=owncloud
-        - OWNCLOUD_ADMIN_USERNAME=owncloud
-        - OWNCLOUD_ADMIN_PASSWORD=owncloud
+        - OWNCLOUD_DB_USERNAME=asystemnormaluser
+        - OWNCLOUD_DB_PASSWORD=S3curE_P@SsSw0rdd
+        - OWNCLOUD_ADMIN_USERNAME=admin_login_owncloud
+        - OWNCLOUD_ADMIN_PASSWORD=Ann011her_STRONG_pswWW
         - OWNCLOUD_VOLUME_CERTS=/etc/apache2/keys/
     env_file:
         - '.router/um.env'
@@ -134,7 +135,7 @@ services:
     environment:
         - LDAP_ORGANISATION=Universidad de Murcia
         - LDAP_DOMAIN=um.es
-        - LDAP_ADMIN_PASSWORD=um_password
+        - LDAP_ADMIN_PASSWORD=S3cuurreeee_lDAP_P@@@@sssswWWo00o0o0orDDD
         - HOSTNAME=ldap.um.es #Bug
         - LDAP_TLS=true
         - LDAP_TLS_CRT_FILENAME=ldap-cert.pem
