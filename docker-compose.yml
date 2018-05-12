@@ -213,28 +213,22 @@ services:
                 - voip.um.es
             ipv4_address: 192.168.251.2
 
-  um_msf:
-    build: ./upm/msf/
-    hostname: msf
+  um_ftp:
+    build: ./um/ftpd/
+    hostname: ftp
     domainname: um.es
-    stdin_open: true
-    tty: true
+    depends_on:
+        - "um_router"
+    env_file:
+        - '.router/um.env'
     cap_add:
         - NET_ADMIN
-    depends_on:
-        - "um_db"
-        - "um_router"
-    environment:
-        - DB_PORT_5432_TCP_ADDR=db.um.es
-        - PGPASSWORD=owncloud
-    env_file:
-      - '.router/um.env'
+    mac_address: 00:11:22:33:44:66
     networks:
         red1:
             aliases:
-                - msf.um.es
+                - ftp.um.es
             ipv4_address: 192.168.251.66
-
 
   um_router:
     build: ./um/router/
@@ -441,26 +435,26 @@ services:
                 - msf.upm.es
             ipv4_address: 192.168.252.66
 
-  upm_nessus:
-    build: ./upm/nessus/
-    hostname: nessus
-    domainname: upm.es
-    cap_add:
-        - NET_ADMIN
-    depends_on:
-        - "upm_router"
-        - "upm_msf"
-    environment:
-        - LICENSE=
-        - ADMIN_USER=admin
-        - ADMIN_PASS=admin
-    env_file:
-      - '.router/upm.env'
-    networks:
-        red2:
-            aliases:
-                - nessus.upm.es
-            ipv4_address: 192.168.252.77
+  # upm_nessus:
+  #   build: ./upm/nessus/
+  #   hostname: nessus
+  #   domainname: upm.es
+  #   cap_add:
+  #       - NET_ADMIN
+  #   depends_on:
+  #       - "upm_router"
+  #       - "upm_msf"
+  #   environment:
+  #       - LICENSE=
+  #       - ADMIN_USER=admin
+  #       - ADMIN_PASS=admin
+  #   env_file:
+  #     - '.router/upm.env'
+  #   networks:
+  #       red2:
+  #           aliases:
+  #               - nessus.upm.es
+  #           ipv4_address: 192.168.252.77
 
   upm_router:
     build: ./upm/router/
