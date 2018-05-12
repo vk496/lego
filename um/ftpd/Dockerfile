@@ -21,10 +21,12 @@ RUN set -e; \
         echo "local_enable=YES" >> /etc/vsftpd.conf; \
       rm -Rf /usr/src/vsftpd;
 
-
-
-
 COPY misc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+#SNMP
+COPY conf/snmpd.conf /etc/snmp/snmpd.conf
+RUN sed -i 's/.*mibs :/#&/' /etc/snmp/snmp.conf #Enable all MIBS
+
 
 #Firewall
 COPY conf/firewall.ipv4 /etc/iptables_firewall
