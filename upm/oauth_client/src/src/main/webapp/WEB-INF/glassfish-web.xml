@@ -1,0 +1,3 @@
+<glassfish-web-app error-url="">
+    <context-root>/oauth_UPM_CLIENT</context-root>
+</glassfish-web-app>

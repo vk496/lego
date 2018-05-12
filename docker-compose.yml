@@ -231,6 +231,32 @@ services:
                 - ftp.um.es
             ipv4_address: 192.168.251.66
 
+  um_oauth:
+    build: ./um/oauth/
+    hostname: oauth
+    domainname: um.es
+    depends_on:
+        - "um_router"
+        - "um_openldap"
+    env_file:
+        - '.router/um.env'
+    cap_add:
+        - NET_ADMIN
+    environment:
+        - CLIENT_ID_INIT=123456
+        - CLIENT_SECRET_INIT=11111
+        - LDAP_SERVER_PATH=ldap://192.168.251.6:389
+        - LDAP_AUTH_USER=cn=admin,dc=um,dc=es
+        - LDAP_AUTH_PASSWORD=S3cuurreeee_lDAP_P@@@@sssswWWo00o0o0orDDD
+        - LDAP_SEARCH_BASE=dc=um,dc=es
+        - LDAP_SEARCH_FILTER=(&(&(|(objectclass=inetOrgPerson))(|(memberof=cn=owncloud,ou=Servicios,dc=um,dc=es)))(|(cn=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))
+    mac_address: 00:11:22:33:44:77
+    networks:
+        red1:
+            aliases:
+                - oauth.um.es
+            ipv4_address: 192.168.251.77
+
   um_router:
     build: ./um/router/
     hostname: router
@@ -456,6 +482,33 @@ services:
   #           aliases:
   #               - nessus.upm.es
   #           ipv4_address: 192.168.252.77
+
+
+  upm_oauth_client:
+    build: ./upm/oauth_client/
+    hostname: oauth_client
+    domainname: upm.es
+    depends_on:
+        - "upm_router"
+        - "um_oauth"
+    env_file:
+        - '.router/upm.env'
+    cap_add:
+        - NET_ADMIN
+    environment:
+        - APP_CLIENT_ID=123456
+        - APP_CLIENT_SECRET=11111
+        - OAUTH_REGISTER=http://192.168.251.77:8080/oauth_UM/register
+        - OAUTH_AUTH=http://192.168.251.77:8080/oauth_UM/auth
+        - OAUTH_TOKEN=http://192.168.251.77:8080/oauth_UM/token
+        - OAUTH_RESOURCE=http://192.168.251.77:8080/oauth_UM/get_data
+        - OAUTH_REDIRECT=http://192.168.252.43:8080/oauth_UPM_CLIENT/redirect
+    mac_address: 00:11:22:33:44:43
+    networks:
+        red2:
+            aliases:
+                - oauth_client.upm.es
+            ipv4_address: 192.168.252.43
 
   upm_router:
     build: ./upm/router/
