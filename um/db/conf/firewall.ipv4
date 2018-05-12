@@ -10,7 +10,7 @@
 -A INPUT -p icmp --icmp-type 8 -j ACCEPT
 
 #DB
--A INPUT -p tcp --dport 5432 -j ACCEPT
+-A INPUT -p tcp --dport 5432 -s $ORG_NET -j ACCEPT
 
 
 

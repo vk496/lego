@@ -10,7 +10,7 @@
 -A INPUT -p icmp --icmp-type 8 -j ACCEPT
 
 #LDAP + LDAP_TLS
--A INPUT -p tcp -m multiport --dports 389,636 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 389,636 -s $ORG_NET -j ACCEPT
 
 #SNMP
 -A INPUT -p udp --dport 161 -j ACCEPT

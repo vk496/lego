@@ -2,6 +2,9 @@
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
+
+-A FORWARD -p tcp --dport 21 -j DROP
+
 COMMIT
 
 *nat
