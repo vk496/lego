@@ -84,7 +84,7 @@ public class ClientRedirectEndpoint extends HttpServlet {
             return;
         }
 
-        response.sendRedirect("/oauth_UM");
+        response.sendRedirect(request.getContextPath());
 
     }
 

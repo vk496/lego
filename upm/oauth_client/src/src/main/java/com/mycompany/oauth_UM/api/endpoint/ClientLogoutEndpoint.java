@@ -32,11 +32,11 @@ public class ClientLogoutEndpoint extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
 //        String JSESSION_ID= request.getSession().getId();
         ClientContent.ACCESS_TOKEN.remove(request.getSession().getId());
-        
-        response.sendRedirect("/oauth_UM");
+
+        response.sendRedirect(request.getContextPath());
     }
 
 }

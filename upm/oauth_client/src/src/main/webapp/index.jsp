@@ -13,13 +13,13 @@
         <h1>Hello World!</h1>
         <%
             if (!ClientContent.ACCESS_TOKEN.containsKey(request.getSession().getId())) {
-        %>                
+        %>
 
-        <div>Para usar esta aplicación, debe darle permisos</div>
+        <div>Para usar esta aplicaciï¿½n, debe darle permisos</div>
         <a href="<%=request.getAttribute("oauth_link")%>">Link</a>
 
         <% } else {
-        %>    
+        %>
         <h3>Datos del usuario</h3>
         <%
             String data = (String) request.getAttribute("response");
@@ -29,7 +29,7 @@
                 out.println("<b>" + entry.getKey() + "</b>: " + entry.getValue() + "<br>");
             }
         %>
-        <a href="oauth_UM/logout" onclick="window.location.reload(true);" >Logout</a>
+        <a href="<%=request.getContextPath() + "/logout" %>" onclick="window.location.reload(true);" >Logout</a>
         <%}%>
     </body>
 </html>
