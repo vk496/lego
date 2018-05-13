@@ -1,0 +1,30 @@
+*filter
+:INPUT DROP [0:0]
+
+#Allow local connections
+-A INPUT -i lo -j ACCEPT
+#Allow input for our previous outgoing traffic
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#Ping
+-A INPUT -p icmp --icmp-type 8 -j ACCEPT
+
+#SSL
+-A INPUT -p tcp -m multiport --dports 443 -j ACCEPT
+
+
+
+
+
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+
+#Allow local connections
+-A OUTPUT -o lo -j ACCEPT
+#Allow output for our previous incoming traffic
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#OCSP + CRL
+-A OUTPUT -p tcp -m multiport --dports 80,8080 -d $HOST_DISTRIBUTION -j ACCEPT
+
+COMMIT

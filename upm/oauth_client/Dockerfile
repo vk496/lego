@@ -29,6 +29,8 @@ RUN mkdir -p /var/log/supervisor; chown payara:payara /var/log/supervisor
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
 RUN mkdir /run/nginx
 
-# USER payara
+#Firewall
+COPY conf/firewall.ipv4 /etc/iptables_firewall
+
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord"]
