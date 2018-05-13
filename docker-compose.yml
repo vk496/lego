@@ -582,10 +582,6 @@ volumes:
         external:
             name: "upm-certs-oauth_client"
 
-    plugins-attributes:
-    plugins-code:
-    plugins-desc.db:
-    plugins-md5.db:
 
 # NETWORKS ################################
 networks:
