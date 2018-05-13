@@ -235,6 +235,9 @@ services:
     build: ./um/oauth/
     hostname: oauth
     domainname: um.es
+    volumes:
+        - lego_ca:/etc/nginx/ca_keys/
+        - um-certs-oauth:/etc/nginx/keys/
     depends_on:
         - "um_router"
         - "um_openldap"
@@ -488,6 +491,9 @@ services:
     build: ./upm/oauth_client/
     hostname: oauth_client
     domainname: upm.es
+    volumes:
+        - lego_ca:/etc/nginx/ca_keys/
+        - upm-certs-oauth_client:/etc/nginx/keys/
     depends_on:
         - "upm_router"
         - "um_oauth"
@@ -498,11 +504,11 @@ services:
     environment:
         - APP_CLIENT_ID=123456
         - APP_CLIENT_SECRET=11111
-        - OAUTH_REGISTER=http://192.168.251.77:8080/oauth_UM/register
-        - OAUTH_AUTH=http://192.168.251.77:8080/oauth_UM/auth
-        - OAUTH_TOKEN=http://192.168.251.77:8080/oauth_UM/token
-        - OAUTH_RESOURCE=http://192.168.251.77:8080/oauth_UM/get_data
-        - OAUTH_REDIRECT=http://192.168.252.43:8080/oauth_UPM_CLIENT/redirect
+        - OAUTH_REGISTER=https://192.168.251.77/oauth_UM/register
+        - OAUTH_AUTH=https://192.168.251.77/oauth_UM/auth
+        - OAUTH_TOKEN=https://192.168.251.77/oauth_UM/token
+        - OAUTH_RESOURCE=https://192.168.251.77/oauth_UM/get_data
+        - OAUTH_REDIRECT=https://192.168.252.43/oauth_UPM_CLIENT/redirect
     mac_address: 00:11:22:33:44:43
     networks:
         red2:
@@ -550,6 +556,9 @@ volumes:
     um-certs-radius:
         external:
             name: "um-certs-radius"
+    um-certs-oauth:
+        external:
+            name: "um-certs-oauth"
 
     upm-certs:
         external:
@@ -569,6 +578,9 @@ volumes:
     upm-certs-radius:
         external:
             name: "upm-certs-radius"
+    upm-certs-oauth_client:
+        external:
+            name: "upm-certs-oauth_client"
 
     plugins-attributes:
     plugins-code:

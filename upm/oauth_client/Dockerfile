@@ -15,6 +15,7 @@ USER root
 RUN apk add --no-cache \
     supervisor \
     iproute2 \
+    nginx \
     && mkdir /etc/supervisord.d
 
 
@@ -24,6 +25,10 @@ COPY --from=builder /src/oauth_um/target/oauth_UPM_CLIENT-1.0-SNAPSHOT.war /opt/
 COPY misc/supervisord.conf /etc/supervisord.conf
 RUN mkdir -p /var/log/supervisor; chown payara:payara /var/log/supervisor
 
-USER payara
+#Nginx
+COPY conf/default.conf /etc/nginx/conf.d/default.conf
+RUN mkdir /run/nginx
+
+# USER payara
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord"]

@@ -12,7 +12,7 @@ for i in "${software[@]}"; do
     fi
 done
 
-#Root 
+#Root
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 
 help_usage() {
@@ -82,15 +82,17 @@ domains=(
 for domain in "${domains[@]}"; do
         dom=$(echo $domain | cut -d: -f1) #Get domain
         ip_range=$(echo $domain | cut -d: -f2) #Get IP range
-        
+
         servicios=(
             "distribution:$ip_range.99"
             "owncloud:$ip_range.5"
             "voip:$ip_range.2"
             "ldap:$ip_range.6"
             "radius:$ip_range.3"
+            "oauth:$ip_range.77"
+            "oauth_client:$ip_range.43"
         )
-        
+
         #GENERAL SSL ARGUMENTS
         LEGO_CA_KEY="$dom-key.pem"
         LEGO_CA_CERT="$dom.pem"
@@ -101,10 +103,10 @@ for domain in "${domains[@]}"; do
         LEGO_SSL_OCSP="http://$ip_range.99:8080,http://distribution.$dom.es:8080"
         LEGO_SSL_SIZE="2048"
         LEGO_SSL_EXPIRE="360"
-            
-    if ! sudo -u $SUDO_USER docker volume inspect $dom-certs 2>/dev/null >/dev/null; then        
+
+    if ! sudo -u $SUDO_USER docker volume inspect $dom-certs 2>/dev/null >/dev/null; then
         sudo -u $SUDO_USER docker volume create $dom-certs #All certs
-        
+
         #Generate CA
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
             -e CA_KEY="$LEGO_CA_KEY" \
@@ -120,25 +122,31 @@ for domain in "${domains[@]}"; do
         vk496/omgwtfssl
 
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl cat $dom.pem > $dom.pem #Get CA outside Docker
-        
+
         #Revoke default SSL key
         echo "REVOKE default server cert & keys"
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs vk496/omgwtfssl bash -c "openssl ca -config openssl.cnf -revoke revoked_cert.pem -keyfile $LEGO_CA_KEY -cert $LEGO_CA_CERT"
         echo "OK"
-        
+
         for servicio in "${servicios[@]}"; do
             subdom=$(echo $servicio | cut -d: -f1) #Get domain of service
             ip_serv=$(echo $servicio | cut -d: -f2) #Get ip of service
-            
+
+            if [[ $subdom == "oauth" ]] && [[ $dom == "upm" ]]; then
+                continue;
+            elif [[ $subdom == "oauth_client" ]] && [[ $dom == "um" ]]; then
+                continue;
+            fi
+
             LEGO_SSL_KEY="$subdom-key.pem"
             LEGO_SSL_CSR="$subdom-key.csr"
             LEGO_SSL_CERT="$subdom-cert.pem"
             LEGO_SSL_SUBJECT="$ip_serv"
             LEGO_SSL_DNS="$subdom.$dom.es"
             LEGO_SSL_IP="$ip_serv"
-            
+
             sudo -u $SUDO_USER docker volume create $dom-certs-$subdom #Service certs
-            
+
             #Generate cert
             sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
                 -e CA_KEY="$LEGO_CA_KEY" \
@@ -155,33 +163,33 @@ for domain in "${domains[@]}"; do
                 -e SSL_CRL="$LEGO_SSL_CRL" \
                 -e SSL_OCSP="$LEGO_SSL_OCSP" \
             vk496/omgwtfssl
-            
-            
+
+
             if [[ $subdom == "distribution" ]]; then #distribution must have special extension. Resign
                 echo "Special resign for distribution service"
                 sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs \
                     vk496/omgwtfssl bash -c "openssl ca -batch -config ${LEGO_SSL_CONFIG} -keyfile ${LEGO_CA_KEY} -cert ${LEGO_CA_CERT} -outdir . -in ${LEGO_SSL_CSR} -out ${LEGO_SSL_CERT} -extensions v3_OCSP -create_serial -extfile ${LEGO_SSL_CONFIG} -days ${LEGO_SSL_EXPIRE} -notext -preserveDN"
             fi
-            
+
             #Aislate the keys from CA and full chain CA
             sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-$subdom:/service_certs vk496/omgwtfssl bash -c "cp /certs/{$subdom*,$dom.pem} /service_certs && cat /certs/{$subdom-cert.pem,$dom.pem} > /service_certs/$subdom-cert-full.pem && openssl dhparam -out /service_certs/dh 1024"
         done
     fi
-    
+
     if ! sudo -u $SUDO_USER docker volume inspect $dom-certs-user 2>/dev/null >/dev/null; then
         sudo -u $SUDO_USER docker volume create $dom-certs-user #Public CA keys
-                
+
         #Generate User certificates
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-user:/certs_user vk496/omgwtfssl bash -ce "\
             openssl genrsa -out /certs_user/user-key.pem $LEGO_SSL_SIZE > /dev/null && \
             openssl req -new -key /certs_user/user-key.pem -out /certs_user/user-key.csr -subj \"/CN=user1@$dom.es\" -config ${LEGO_SSL_CONFIG} > /dev/null && \
             openssl ca -batch -config ${LEGO_SSL_CONFIG} -keyfile ${LEGO_CA_KEY} -cert ${LEGO_CA_CERT} -outdir . -in /certs_user/user-key.csr -out /certs_user/user-cert.pem -extensions usr_cert -create_serial -extfile ${LEGO_SSL_CONFIG} -days ${LEGO_SSL_EXPIRE} -notext -preserveDN"
-        
+
         sudo -u $SUDO_USER docker run --rm -v $dom-certs-user:/certs vk496/omgwtfssl cat user-cert.pem > $dom-user-cert.pem #Get cert outside docker
         sudo -u $SUDO_USER docker run --rm -v $dom-certs-user:/certs vk496/omgwtfssl cat user-key.pem > $dom-user-key.pem #Get keys outside docker
-            
+
     fi
-     
+
 done
 
 if ! sudo -u $SUDO_USER docker volume inspect lego_ca 2>/dev/null >/dev/null; then
@@ -189,13 +197,13 @@ if ! sudo -u $SUDO_USER docker volume inspect lego_ca 2>/dev/null >/dev/null; th
 
     for domain in "${domains[@]}"; do
         dom=$(echo $domain | cut -d: -f1) #Get domain
-        
+
         #Prepare public CA certs
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v lego_ca:/public_ca vk496/omgwtfssl bash -c "cp /certs/$dom.pem /public_ca && cp /certs/$dom.pem /public_ca/\$(openssl x509 -in /certs/$dom.pem -noout -hash).0"
-        
+
         #Generate CRL
         sudo -u $SUDO_USER docker run --rm -v $dom-certs:/certs -v $dom-certs-distribution:/distribution vk496/omgwtfssl bash -c "openssl ca -gencrl -config /certs/openssl.cnf -keyfile /certs/$dom-key.pem -cert $dom.pem -out /distribution/$dom.crl && cp .db.pem{,.attr} /distribution/"
-        
+
     done
 fi
 
