@@ -15,6 +15,8 @@ The first two was coursed together the first quarter. Security was coursed the l
 
 The goal is to deploy two organizations with their own services (FreeRADIUS, OpenLDAP, Asterisk, OwnCloud, Firewall, etc.)
 
+<img src="diagrama.svg"/>
+
 ## How is organized?
 The project was developed cronologically. Each project delivery of the subjects will be in a different branch. Those branches will contain a **FULL technical documentation**, as PDF in Spanish (sorry :P).
 
