@@ -13,7 +13,7 @@ LEGO is a project of the Faculty of Computer Science (Technology of Information 
 
 The first two was coursed together the first quarter. Security was coursed the last quarter.
 
-The goal is to deploy two organizations with their own services (FreeRADIUS, OpenLDAP, Asterisk, OwnCloud, Firewall, etc.)
+The goal is to deploy two enterprise organizations with their own services (FreeRADIUS, OpenLDAP, Asterisk, OwnCloud, Firewall, etc.)
 
 <img src="diagrama.svg"/>
 
